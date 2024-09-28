@@ -22,7 +22,7 @@ function Header() {
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-6">
         <Link href="/" className="flex items-center">
           <School className="w-6 h-6 text-blue-500" />
-          <span className="ml-2 text-xl font-semibold text-gray-900">
+          <span className="ml-2 text-xl font-bold text-gray-900">
             School Management
           </span>
         </Link>

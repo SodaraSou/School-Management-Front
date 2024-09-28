@@ -1,5 +1,6 @@
 "use client";
 
+import { useFormState } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import { signIn, signUp } from "./actions";
@@ -14,6 +15,11 @@ export default function AuthForm({
 }: {
   mode?: "sign-in" | "sign-up";
 }) {
+  const [state, formAction] = useFormState(
+    mode === "sign-in" ? signIn : signUp,
+    null
+  );
+
   return (
     <div className="w-full lg:grid lg:grid-cols-2 min-h-screen">
       <div className="flex items-center justify-center py-12">
@@ -26,14 +32,22 @@ export default function AuthForm({
               {mode === "sign-in" ? "Sign In" : "Sign Up"}
             </h1>
           </div>
-          <form className="grid gap-4">
+          {state?.message && <p>{state?.message}</p>}
+          <form action={formAction} className="grid gap-4">
+            {mode === "sign-up" && (
+              <div className="grid gap-2">
+                <Label htmlFor="name">Name</Label>
+                <Input id="name" type="name" placeholder="Name" name="name" />
+                {/* {state?.name && <p>{state?.name}</p>} */}
+              </div>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="m@example.com"
-                required
+                name="email"
               />
             </div>
             <div className="grid gap-2">
@@ -48,12 +62,16 @@ export default function AuthForm({
                   </Link>
                 )}
               </div>
-              <Input id="password" type="password" required />
+              <Input id="password" type="password" name="password" />
             </div>
             {mode === "sign-up" && (
               <div className="grid gap-2">
                 <Label htmlFor="password">Confirm Password</Label>
-                <Input id="confirmPassword" type="password" required />
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  name="confirmPassword"
+                />
               </div>
             )}
             <Button
