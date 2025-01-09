@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormState } from "react-dom";
+import { useActionState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { signIn, signUp } from "./actions";
@@ -15,7 +15,7 @@ export default function AuthForm({
 }: {
   mode?: "sign-in" | "sign-up";
 }) {
-  const [state, formAction] = useFormState(
+  const [state, formAction] = useActionState(
     mode === "sign-in" ? signIn : signUp,
     null
   );

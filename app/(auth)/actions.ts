@@ -5,6 +5,8 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import axios from "@/lib/axios";
 
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 const signInSchema = z.object({
   email: z.string().min(1, {
     message: "Required Email",
@@ -14,7 +16,7 @@ const signInSchema = z.object({
   }),
 });
 
-export const signIn = async (prevData: any, formData: FormData) => {
+export const signIn = async (_prevData: never, formData: FormData) => {
   const validatedData = signInSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
@@ -23,25 +25,44 @@ export const signIn = async (prevData: any, formData: FormData) => {
     console.log(validatedData.error.flatten().fieldErrors);
     return { ...validatedData.error.flatten().fieldErrors, success: false };
   }
-  var user = null;
+  let user = null;
   try {
-    const res = await axios.post("/api/login", { ...validatedData.data });
-    user = res.data;
-    const expirationDate = new Date(Date.now() + res.data.expires);
-    cookies().set("session", res.data.token, {
+    const res = await fetch(`${API_URL}/api/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(validatedData.data),
+    });
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.log(errorData);
+      return {
+        message: errorData.message,
+        success: false,
+        status: res.status,
+      };
+    }
+    user = await res.json();
+    const expirationDate = new Date(Date.now() + user.data.expires);
+    (await cookies()).set("session", user.data.token, {
       expires: expirationDate,
       httpOnly: true,
       secure: true,
       sameSite: "strict",
     });
-  } catch (error: any) {
+  } catch (error) {
     console.log(error);
-    return { message: error.response, success: false };
+    return {
+      message: "An error occurred",
+      success: false,
+    };
   }
-  if (user.is_super_admin) {
-    redirect("/dashboard");
+  if (user.data.role[0] === "student") {
+    redirect("/student");
+  } else if (user.data.role[0] === "teacher") {
+    redirect("/teacher");
   }
-  redirect("/");
 };
 
 const signUpSchema = z.object({
@@ -59,7 +80,7 @@ const signUpSchema = z.object({
   }),
 });
 
-export const signUp = async (prevData: any, formData: FormData) => {
+export const signUp = async (_prevData: never, formData: FormData) => {
   const validatedData = signUpSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -73,7 +94,7 @@ export const signUp = async (prevData: any, formData: FormData) => {
   try {
     const res = await axios.post("/api/register", { ...validatedData.data });
     const expiresInOneDay = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    cookies().set("session", res.data.token, {
+    (await cookies()).set("session", res.data.token, {
       expires: expiresInOneDay,
       httpOnly: true,
       secure: true,

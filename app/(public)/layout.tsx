@@ -1,9 +1,10 @@
+import React from "react";
 import Link from "next/link";
 
 import { School } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function Userlayout({
+export default function Publiclayout({
   children,
 }: {
   children: React.ReactNode;
