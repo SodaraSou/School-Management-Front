@@ -28,9 +28,6 @@ function Header() {
           </span>
         </Link>
         <div className="flex items-center gap-2">
-          <Link href="/pricing" className="hover:underline">
-            Pricing
-          </Link>
           <Button
             asChild
             className="rounded-full bg-blue-500 text-white"

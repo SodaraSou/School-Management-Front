@@ -59,9 +59,9 @@ export const signIn = async (_prevData: never, formData: FormData) => {
     };
   }
   if (user.data.role[0] === "student") {
-    redirect("/student");
+    redirect("/dashboard/student");
   } else if (user.data.role[0] === "teacher") {
-    redirect("/teacher");
+    redirect("/dashboard/teacher");
   }
 };
 

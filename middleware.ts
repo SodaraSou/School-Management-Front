@@ -1,18 +1,19 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "./lib/auth";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+const protectedRoutes = "/dashboard";
 
 export default async function middleware(request: NextRequest) {
-  const user = await getCurrentUser();
-  if (user.status === 200 && user.data) {
-    if (user.data.role[0] === "student") {
-      return NextResponse.redirect(new URL("/student", request.url));
-    } else if (user.data.role[0] === "teacher") {
-      return NextResponse.redirect(new URL("/teacher", request.url));
-    }
+  const { pathname } = request.nextUrl;
+  const sessionCookie = request.cookies.get("session");
+  const isProtectedRoute = pathname.startsWith(protectedRoutes);
+  if (isProtectedRoute && !sessionCookie) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
   }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/sign-in", "/sign-up"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

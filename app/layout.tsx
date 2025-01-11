@@ -1,6 +1,8 @@
 import React from "react";
 import type { Metadata } from "next";
 import "./globals.css";
+import { UserProvider } from "@/contexts/user-context";
+import { getCurrentUserV2 } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "School Management",
@@ -12,9 +14,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const userPromise = getCurrentUserV2();
+
   return (
     <html lang="en">
-      <body className="bg-gray-50 min-h-screen">{children}</body>
+      <body className="min-h-[100dvh] bg-gray-50">
+        <UserProvider userPromise={userPromise}>{children}</UserProvider>
+      </body>
     </html>
   );
 }
