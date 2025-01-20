@@ -8,7 +8,7 @@ import {
   useEffect,
 } from "react";
 import { use } from "react";
-import { User } from "@/model/user";
+import { User } from "@/models/user";
 
 type UserContextType = {
   user: User | null;

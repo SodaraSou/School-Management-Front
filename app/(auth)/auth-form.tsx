@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
 import Image from "next/image";
+import { useActionState } from "react";
 import Link from "next/link";
 import { signIn, signUp } from "./actions";
 
@@ -24,9 +24,15 @@ export default function AuthForm({
     <div className="w-full lg:grid lg:grid-cols-2 min-h-screen">
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[400px] gap-6">
-          <div className="grid gap-6 text-center">
+          <div className="flex flex-col gap-6 text-center">
             <Link href="/">
-              <School className="w-12 h-12 mx-auto text-blue-500" />
+              <Image
+                src={"/school-logo.png"}
+                width={120}
+                height={120}
+                alt="school-logo"
+                className="mx-auto"
+              />
             </Link>
             <h1 className="text-3xl font-bold">
               {mode === "sign-in" ? "Sign In" : "Sign Up"}
