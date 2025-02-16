@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PostList from "@/components/teacher/post-list";
 import PostCreateForm from "@/components/teacher/post-create-form";
 import UserList from "@/components/teacher/user-list";
+import AssignmentList from "@/components/teacher/assignment-list";
+import AssignmentCreateMenu from "@/components/teacher/assignment-create-menu";
 
 export default async function TeacherSubjectShow({
   params,
@@ -44,7 +46,10 @@ export default async function TeacherSubjectShow({
           </div>
         </TabsContent>
         <TabsContent value="assignments">
-          <div className="space-y-4"></div>
+          <div className="space-y-4">
+            <AssignmentCreateMenu groupId={group_id} subjectId={subject_id} />
+            <AssignmentList />
+          </div>
         </TabsContent>
         <TabsContent value="people">
           <div className="space-y-4">
