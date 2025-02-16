@@ -41,7 +41,7 @@ type Question = {
   is_require: boolean;
   correct_answer: string;
   points: number;
-  options: Option[];
+  options?: Option[];
 };
 
 export default function AssignmentCreateForm({
@@ -64,7 +64,14 @@ export default function AssignmentCreateForm({
     points: 0,
     options: [],
   });
-  const [editQuestion, setEditQuestion] = useState({});
+  const [editQuestion, setEditQuestion] = useState<Question>({
+    name: "",
+    type: "question",
+    is_require: true,
+    correct_answer: "",
+    points: 0,
+    options: [],
+  });
   const [isEdit, setIsEdit] = useState(false);
   const [isEditNumber, setIsEditNumber] = useState<Number>();
 
@@ -75,13 +82,30 @@ export default function AssignmentCreateForm({
     const { value, id } = e.target;
     setQuestion((prevState) => ({
       ...prevState,
-      [id]: id === "is_correct" ? value === "true" : value,
+      [id]: value,
     }));
   };
 
   const handleAddQuestion = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setQuestions((prevQuestions) => [...prevQuestions, question]);
+    let questionToInsert: Question = {
+      name: question.name,
+      type: question.type,
+      is_require: question.is_require,
+      correct_answer: question.correct_answer,
+      points: question.points,
+      options: question.options,
+    };
+    if (question.type === "question") {
+      questionToInsert = {
+        name: question.name,
+        type: question.type,
+        is_require: question.is_require,
+        correct_answer: question.correct_answer,
+        points: question.points,
+      };
+    }
+    setQuestions((prevQuestions) => [...prevQuestions, questionToInsert]);
     setQuestion({
       name: "",
       type: "question",
@@ -104,7 +128,7 @@ export default function AssignmentCreateForm({
   ) => {
     const { id, value } = e.target;
     setQuestion((prevState) => {
-      const updatedOptions = [...prevState.options];
+      const updatedOptions = [...(prevState.options || [])];
       updatedOptions[index] = {
         ...updatedOptions[index],
         [id]: value,
@@ -117,13 +141,15 @@ export default function AssignmentCreateForm({
     e.preventDefault();
     setQuestion((prevState) => ({
       ...prevState,
-      options: [...prevState.options, { name: "", is_correct: false }],
+      options: [...(prevState.options || []), { name: "", is_correct: false }],
     }));
   };
 
   const handleRemoveOption = (index: number) => {
     setQuestion((prevState) => {
-      const updatedOptions = prevState.options.filter((_, i) => i !== index);
+      const updatedOptions = (prevState.options || []).filter(
+        (_, i) => i !== index
+      );
       return { ...prevState, options: updatedOptions };
     });
   };
@@ -152,14 +178,38 @@ export default function AssignmentCreateForm({
   };
 
   const handleDoneEditQuestion = (index: number) => {
+    let questionToInsert: Question = {
+      name: editQuestion.name,
+      type: editQuestion.type,
+      is_require: editQuestion.is_require,
+      correct_answer: editQuestion.correct_answer,
+      points: editQuestion.points,
+      options: editQuestion.options,
+    };
+    if (question.type === "question") {
+      questionToInsert = {
+        name: editQuestion.name,
+        type: editQuestion.type,
+        is_require: editQuestion.is_require,
+        correct_answer: editQuestion.correct_answer,
+        points: editQuestion.points,
+      };
+    }
     setQuestions((prevState) => {
       const updatedQuestions = [...prevState];
-      updatedQuestions[index] = editQuestion as Question;
+      updatedQuestions[index] = questionToInsert;
       return updatedQuestions;
     });
     setIsEdit(false);
     setIsEditNumber(undefined);
-    setEditQuestion({});
+    setEditQuestion({
+      name: "",
+      type: "question",
+      is_require: true,
+      correct_answer: "",
+      points: 0,
+      options: [],
+    });
   };
 
   const handleEditOptionChange = (
@@ -168,7 +218,7 @@ export default function AssignmentCreateForm({
   ) => {
     const { id, value } = e.target;
     setEditQuestion((prevState) => {
-      const updatedOptions = [...(prevState as Question).options];
+      const updatedOptions = [...((prevState as Question).options || [])];
       updatedOptions[optionIndex] = {
         ...updatedOptions[optionIndex],
         [id]: value,
@@ -179,9 +229,9 @@ export default function AssignmentCreateForm({
 
   const handleRemoveEditOption = (optionIndex: number) => {
     setEditQuestion((prevState) => {
-      const updatedOptions = (prevState as Question).options.filter(
-        (_, i) => i !== optionIndex
-      );
+      const updatedOptions =
+        (prevState as Question).options?.filter((_, i) => i !== optionIndex) ||
+        [];
       return { ...(prevState as Question), options: updatedOptions };
     });
   };
@@ -191,7 +241,7 @@ export default function AssignmentCreateForm({
     setEditQuestion((prevState) => ({
       ...(prevState as Question),
       options: [
-        ...(prevState as Question).options,
+        ...((prevState as Question).options || []),
         { name: "", is_correct: false },
       ],
     }));
@@ -258,7 +308,7 @@ export default function AssignmentCreateForm({
                       <div>Question</div>
                     ) : (
                       <RadioGroup className="flex flex-col gap-4">
-                        {(editQuestion as Question).options.map(
+                        {(editQuestion as Question).options?.map(
                           (option, index) => (
                             <div
                               key={index}
@@ -285,7 +335,7 @@ export default function AssignmentCreateForm({
                                 onChange={() => {
                                   const updatedOptions = (
                                     editQuestion as Question
-                                  ).options.map((opt, i) => ({
+                                  ).options?.map((opt, i) => ({
                                     ...opt,
                                     is_correct: i === index,
                                   }));
@@ -357,7 +407,7 @@ export default function AssignmentCreateForm({
                       <div>Question</div>
                     ) : (
                       <RadioGroup className="flex flex-col gap-4">
-                        {question.options.map((option, index) => (
+                        {question.options?.map((option, index) => (
                           <div
                             key={index}
                             className="flex items-center space-x-2"
@@ -403,7 +453,7 @@ export default function AssignmentCreateForm({
                 <div>Question</div>
               ) : (
                 <RadioGroup className="flex flex-col gap-4">
-                  {question.options.map((option, index) => (
+                  {question.options?.map((option, index) => (
                     <div key={index} className="flex items-center space-x-2">
                       <RadioGroupItem value={`option-${index}`} disabled />
                       <Input
@@ -419,7 +469,7 @@ export default function AssignmentCreateForm({
                         value={index.toString()}
                         checked={option.is_correct}
                         onChange={() => {
-                          const updatedOptions = question.options.map(
+                          const updatedOptions = question.options?.map(
                             (opt, i) => ({
                               ...opt,
                               is_correct: i === index,
