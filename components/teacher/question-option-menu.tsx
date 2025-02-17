@@ -25,7 +25,7 @@ export default function QuestionOptionMenu({
         <SelectValue id="type" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="question">Question</SelectItem>
+        <SelectItem value="text">Question</SelectItem>
         <SelectItem value="qcm">QCM</SelectItem>
       </SelectContent>
     </Select>

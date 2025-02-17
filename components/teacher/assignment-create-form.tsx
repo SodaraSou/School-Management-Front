@@ -29,6 +29,7 @@ import {
 } from "../ui/card";
 import QuestionOptionMenu from "./question-option-menu";
 import { Badge } from "../ui/badge";
+import { createActivity } from "@/app/(dashboard)/teacher/group/[group_id]/subject/[subject_id]/assignment/create/actions";
 
 type Option = {
   name: string;
@@ -55,10 +56,16 @@ export default function AssignmentCreateForm({
   activity: string;
   type: string;
 }) {
+  const initialState = { success: true, message: "", errors: {} };
+  const [state, formAction, isPending] = useActionState(
+    createActivity,
+    initialState
+  );
+
   const [questions, setQuestions] = useState<Question[]>([]);
   const [question, setQuestion] = useState<Question>({
     name: "",
-    type: "question",
+    type: "text",
     is_require: true,
     correct_answer: "",
     points: 0,
@@ -66,7 +73,7 @@ export default function AssignmentCreateForm({
   });
   const [editQuestion, setEditQuestion] = useState<Question>({
     name: "",
-    type: "question",
+    type: "text",
     is_require: true,
     correct_answer: "",
     points: 0,
@@ -74,8 +81,6 @@ export default function AssignmentCreateForm({
   });
   const [isEdit, setIsEdit] = useState(false);
   const [isEditNumber, setIsEditNumber] = useState<Number>();
-
-  console.log(questions);
 
   // Add Question
   const handleOnChange = (e: { target: { id: string; value: string } }) => {
@@ -108,7 +113,7 @@ export default function AssignmentCreateForm({
     setQuestions((prevQuestions) => [...prevQuestions, questionToInsert]);
     setQuestion({
       name: "",
-      type: "question",
+      type: "text",
       is_require: true,
       correct_answer: "",
       points: 0,
@@ -254,7 +259,8 @@ export default function AssignmentCreateForm({
           <FileText /> {activity}
         </CardTitle>
       </CardHeader>
-      <form>
+      {state?.message && <p>{state?.message}</p>}
+      <form action={formAction}>
         <input
           id="subject_id"
           name="subject_id"
@@ -266,6 +272,12 @@ export default function AssignmentCreateForm({
           id="activity_type"
           name="activity_type"
           defaultValue={type}
+          hidden
+        />
+        <input
+          id="questions"
+          name="questions"
+          defaultValue={JSON.stringify(questions)}
           hidden
         />
         <CardContent className="space-y-6">
@@ -304,7 +316,7 @@ export default function AssignmentCreateForm({
                         defaultValue={(editQuestion as Question).type}
                       />
                     </div>
-                    {(editQuestion as Question).type === "question" ? (
+                    {(editQuestion as Question).type === "text" ? (
                       <div>Question</div>
                     ) : (
                       <RadioGroup className="flex flex-col gap-4">
@@ -375,7 +387,7 @@ export default function AssignmentCreateForm({
                 ) : (
                   <>
                     <div className="flex justify-between gap-4">
-                      <p>{question.name}</p>
+                      <p>{question.name || "Untitled Question"}</p>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button variant="ghost" size="icon" disabled={isEdit}>
@@ -403,7 +415,7 @@ export default function AssignmentCreateForm({
                         </PopoverContent>
                       </Popover>
                     </div>
-                    {question.type === "question" ? (
+                    {question.type === "text" ? (
                       <div>Question</div>
                     ) : (
                       <RadioGroup className="flex flex-col gap-4">
@@ -449,7 +461,7 @@ export default function AssignmentCreateForm({
                   defaultValue={question.type}
                 />
               </div>
-              {question.type === "question" ? (
+              {question.type === "text" ? (
                 <div>Question</div>
               ) : (
                 <RadioGroup className="flex flex-col gap-4">
