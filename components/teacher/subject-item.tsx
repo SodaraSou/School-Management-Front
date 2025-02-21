@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +9,7 @@ export default function SubjectItem({ subject }: { subject: Group }) {
       <CardHeader>
         <CardTitle>
           <Link
-            href={`/teacher/group/${subject.id}/subject/${subject.subjects[0].id}`}
+            href={`/subject/${subject.subjects[0].id}?groupId=${subject.id}`}
             className="hover:underline"
           >
             {subject.subjects[0].name}

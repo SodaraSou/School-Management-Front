@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useActionState } from "react";
-import { postAnnouncement } from "@/app/(dashboard)/teacher/actions";
+import { use, useState, useActionState } from "react";
+import { useUser } from "@/contexts/user-context";
+import { postAnnouncement } from "@/app/(dashboard)/subject/[subjectId]/@teacher/actions";
 
 import { Bold, Italic, Loader2, Underline } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -30,6 +31,8 @@ export default function PostCreateForm({
   groupId: string;
   subjectId: string;
 }) {
+  const { userPromise } = useUser();
+  const user = use(userPromise);
   const initialState: State = { message: "", errors: {} };
   const [state, formAction, isPending] = useActionState(
     postAnnouncement,
@@ -44,12 +47,14 @@ export default function PostCreateForm({
           <Card>
             <CardHeader>
               <div className="flex items-center space-x-4">
-                <Avatar>
-                  <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="@shadcn"
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
+                <Avatar className="cursor-pointer size-9">
+                  <AvatarImage alt={user?.name || ""} />
+                  <AvatarFallback>
+                    {user?.name
+                      .split(" ")
+                      .map((n: string) => n[0])
+                      .join("")}
+                  </AvatarFallback>
                 </Avatar>
                 <p className="text-gray-400">Announce something to the class</p>
               </div>

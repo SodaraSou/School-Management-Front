@@ -38,8 +38,10 @@ export default async function AssignmentCreateMenu({
               <DropdownMenuItem key={activityType.id} asChild>
                 <Link
                   href={{
-                    pathname: `/teacher/group/${groupId}/subject/${subjectId}/assignment/create`,
+                    pathname: "/activity/create",
                     query: {
+                      groupId: groupId,
+                      subjectId: subjectId,
                       activity: activityType.name,
                       type: activityType.id,
                     },

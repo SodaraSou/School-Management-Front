@@ -1,3 +1,7 @@
+"use client";
+
+import { use } from "react";
+import { useUser } from "@/contexts/user-context";
 import { format } from "date-fns";
 import { Post } from "@/models/post";
 
@@ -14,14 +18,22 @@ import PostDeleteDialog from "./post-delete-dialog";
 import PostEditDialog from "./post-edit-dialog";
 
 export default function PostItem({ post }: { post: Post }) {
+  const { userPromise } = useUser();
+  const user = use(userPromise);
+
   return (
     <Card className="shadow-none">
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           <div className="flex items-center space-x-4">
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>CN</AvatarFallback>
+            <Avatar className="cursor-pointer size-9">
+              <AvatarImage alt={user?.name || ""} />
+              <AvatarFallback>
+                {user?.name
+                  .split(" ")
+                  .map((n: string) => n[0])
+                  .join("")}
+              </AvatarFallback>
             </Avatar>
             <div className="font-normal">
               <h5 className="text-lg">{post.user.name}</h5>
@@ -30,19 +42,21 @@ export default function PostItem({ post }: { post: Post }) {
               </p>
             </div>
           </div>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <EllipsisVertical />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-auto p-0">
-              <div className="flex flex-col">
-                <PostEditDialog />
-                <PostDeleteDialog />
-              </div>
-            </PopoverContent>
-          </Popover>
+          {user?.role[0] === "teacher" && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <EllipsisVertical />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-auto p-0">
+                <div className="flex flex-col">
+                  <PostEditDialog />
+                  <PostDeleteDialog />
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent>

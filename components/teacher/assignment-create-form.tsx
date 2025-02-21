@@ -29,7 +29,7 @@ import {
 } from "../ui/card";
 import QuestionOptionMenu from "./question-option-menu";
 import { Badge } from "../ui/badge";
-import { createActivity } from "@/app/(dashboard)/teacher/group/[group_id]/subject/[subject_id]/assignment/create/actions";
+import { createActivity } from "@/app/(dashboard)/activity/actions";
 
 type Option = {
   name: string;

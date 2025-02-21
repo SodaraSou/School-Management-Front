@@ -15,10 +15,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 type AssignmentStatus = "Not started" | "In progress" | "Submitted";
 
-export default function AssignmentItem() {
+export default function AssignmentItem({ activity }: { activity: any }) {
   const statusColor: Record<AssignmentStatus, string> = {
     "Not started": "bg-yellow-500",
     "In progress": "bg-blue-500",
@@ -30,31 +31,25 @@ export default function AssignmentItem() {
     "In progress": <FileIcon className="h-4 w-4" />,
     Submitted: <CheckCircleIcon className="h-4 w-4" />,
   };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span></span>
-          <Badge variant="secondary">
-            <span className="ml-1"></span>
-          </Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center text-sm text-muted-foreground">
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          Due:
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button variant="outline" size="sm">
-          View Details
-        </Button>
-        <Button size="sm">
-          Submit
-          {/*{status === "Submitted" ? "Edit Submission" : "Submit"}*/}
-        </Button>
-      </CardFooter>
-    </Card>
+    <Link href={`/activity/${activity.id}`}>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span>{activity.forms.title}</span>
+            <Badge variant="secondary">
+              <span className="ml-1"></span>
+            </Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center text-sm text-muted-foreground">
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            Due:
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

@@ -58,11 +58,7 @@ export const signIn = async (_prevData: never, formData: FormData) => {
       success: false,
     };
   }
-  if (user.data.role[0] === "student") {
-    redirect("/student");
-  } else if (user.data.role[0] === "teacher") {
-    redirect("/teacher");
-  }
+  redirect("/dashboard");
 };
 
 const signUpSchema = z.object({
