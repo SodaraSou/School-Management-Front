@@ -1,5 +1,19 @@
-import React from "react";
+import { fetchActivityById } from "@/services/activity";
 
-export default function TeacherActivityShow() {
-  return <div>TeacherActivityShow</div>;
+import AssignmentEditForm from "@/components/teacher/assignment-edit-form";
+
+export default async function TeacherActivityShow({
+  params,
+}: {
+  params: Promise<{ activityId: string }>;
+}) {
+  const { activityId } = await params;
+
+  const res = await fetchActivityById(activityId);
+
+  if (!res.success) {
+    throw new Error(res.message);
+  }
+
+  return <AssignmentEditForm activity={res.data} />;
 }
