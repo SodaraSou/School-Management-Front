@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect } from "react";
 
 import {
   FileText,
@@ -10,7 +10,9 @@ import {
   Edit,
   Trash2,
   Save,
+  Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -61,6 +63,12 @@ export default function AssignmentCreateForm({
     createActivity,
     initialState
   );
+
+  useEffect(() => {
+    if (!state.success) {
+      toast.error(state.message);
+    }
+  }, [state]);
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [question, setQuestion] = useState<Question>({
@@ -253,13 +261,12 @@ export default function AssignmentCreateForm({
   };
 
   return (
-    <Card className="max-w-2xl mx-auto">
+    <Card className="max-w-4xl mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-2xl font-bold">
           <FileText /> {activity}
         </CardTitle>
       </CardHeader>
-      {state?.message && <p>{state?.message}</p>}
       <form action={formAction}>
         <input
           id="subject_id"
@@ -277,13 +284,23 @@ export default function AssignmentCreateForm({
         <input
           id="questions"
           name="questions"
-          defaultValue={JSON.stringify(questions)}
+          value={JSON.stringify(questions)}
+          readOnly
           hidden
         />
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label>Title</Label>
             <Input id="title" name="title" placeholder="Title" />
+            {state.errors && (
+              <p>
+                {state.errors.title?.map((error: string, index: number) => (
+                  <span key={index} className="text-red-500">
+                    {error}
+                  </span>
+                ))}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label>Description</Label>
@@ -292,6 +309,17 @@ export default function AssignmentCreateForm({
               name="description"
               placeholder="Description"
             />
+            {state.errors && (
+              <p>
+                {state.errors.description?.map(
+                  (error: string, index: number) => (
+                    <span key={index} className="text-red-500">
+                      {error}
+                    </span>
+                  )
+                )}
+              </p>
+            )}
           </div>
           {/* List of Questions */}
           <div className="flex flex-col gap-4">
@@ -303,18 +331,36 @@ export default function AssignmentCreateForm({
                 {isEditNumber === index ? (
                   <>
                     <div className="flex justify-between gap-4">
-                      <Input
-                        id="name"
-                        name="name"
-                        defaultValue={(editQuestion as Question).name}
-                        onChange={handleOnEditQuestion}
-                        className="py-6"
-                        placeholder="Untitled Question"
-                      />
-                      <QuestionOptionMenu
-                        handleOnChange={handleOnEditQuestion}
-                        defaultValue={(editQuestion as Question).type}
-                      />
+                      <div className="w-full flex flex-col gap-2">
+                        <Label>Question</Label>
+                        <Input
+                          id="name"
+                          name="name"
+                          defaultValue={(editQuestion as Question).name}
+                          onChange={handleOnEditQuestion}
+                          className="py-6"
+                          placeholder="Untitled Question"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Label>Type</Label>
+                        <QuestionOptionMenu
+                          handleOnChange={handleOnEditQuestion}
+                          defaultValue={(editQuestion as Question).type}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Label>Point</Label>
+                        <Input
+                          id="points"
+                          name="points"
+                          className="py-6"
+                          placeholder="Point"
+                          type="number"
+                          defaultValue={editQuestion.points}
+                          onChange={handleOnEditQuestion}
+                        />
+                      </div>
                     </div>
                     {(editQuestion as Question).type === "text" ? (
                       <div>Question</div>
@@ -326,43 +372,48 @@ export default function AssignmentCreateForm({
                               key={index}
                               className="flex items-center space-x-2"
                             >
-                              <RadioGroupItem
-                                value={`option-${index}`}
-                                disabled
-                              />
-                              <Input
-                                id={`name`}
-                                value={option.name}
-                                onChange={(e) =>
-                                  handleEditOptionChange(e, index)
-                                }
-                                placeholder="Untitled Option"
-                              />
-                              <input
-                                type="radio"
-                                name="correct_option"
-                                id={`is_correct`}
-                                value={index.toString()}
-                                checked={option.is_correct}
-                                onChange={() => {
-                                  const updatedOptions = (
-                                    editQuestion as Question
-                                  ).options?.map((opt, i) => ({
-                                    ...opt,
-                                    is_correct: i === index,
-                                  }));
-                                  setEditQuestion((prevState) => ({
-                                    ...(prevState as Question),
-                                    options: updatedOptions,
-                                  }));
-                                }}
-                              />
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveEditOption(index)}
-                              >
-                                <X />
-                              </button>
+                              <div className="w-4/5 flex items-center gap-2">
+                                <RadioGroupItem
+                                  value={`option-${index}`}
+                                  disabled
+                                />
+                                <Input
+                                  id={`name`}
+                                  value={option.name}
+                                  onChange={(e) =>
+                                    handleEditOptionChange(e, index)
+                                  }
+                                  placeholder="Untitled Option"
+                                />
+                              </div>
+                              <div className="w-1/5 flex items-center gap-2">
+                                <Label>Is Correct</Label>
+                                <input
+                                  type="radio"
+                                  name="correct_option"
+                                  id={`is_correct`}
+                                  value={index.toString()}
+                                  checked={option.is_correct}
+                                  onChange={() => {
+                                    const updatedOptions = (
+                                      editQuestion as Question
+                                    ).options?.map((opt, i) => ({
+                                      ...opt,
+                                      is_correct: i === index,
+                                    }));
+                                    setEditQuestion((prevState) => ({
+                                      ...(prevState as Question),
+                                      options: updatedOptions,
+                                    }));
+                                  }}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveEditOption(index)}
+                                >
+                                  <X />
+                                </button>
+                              </div>
                             </div>
                           )
                         )}
@@ -448,18 +499,36 @@ export default function AssignmentCreateForm({
             {/* Create Question */}
             <div className="w-full flex flex-col bg-gray-100 p-4 rounded-lg space-y-4">
               <div className="flex justify-between gap-4">
-                <Input
-                  id="name"
-                  name="name"
-                  value={question.name}
-                  onChange={handleOnChange}
-                  className="py-6"
-                  placeholder="Untitled Question"
-                />
-                <QuestionOptionMenu
-                  handleOnChange={handleOnChange}
-                  defaultValue={question.type}
-                />
+                <div className="w-full flex flex-col gap-2">
+                  <Label>Quesiton</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    value={question.name}
+                    onChange={handleOnChange}
+                    className="py-6"
+                    placeholder="Untitled Question"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label>Type</Label>
+                  <QuestionOptionMenu
+                    handleOnChange={handleOnChange}
+                    defaultValue={question.type}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label>Point</Label>
+                  <Input
+                    id="points"
+                    name="points"
+                    className="py-6"
+                    placeholder="Point"
+                    type="number"
+                    value={question.points}
+                    onChange={handleOnChange}
+                  />
+                </div>
               </div>
               {question.type === "text" ? (
                 <div>Question</div>
@@ -467,38 +536,43 @@ export default function AssignmentCreateForm({
                 <RadioGroup className="flex flex-col gap-4">
                   {question.options?.map((option, index) => (
                     <div key={index} className="flex items-center space-x-2">
-                      <RadioGroupItem value={`option-${index}`} disabled />
-                      <Input
-                        id={`name`}
-                        value={option.name}
-                        onChange={(e) => handleOptionChange(e, index)}
-                        placeholder="Untitled Option"
-                      />
-                      <input
-                        type="radio"
-                        name="correct_option"
-                        id={`is_correct`}
-                        value={index.toString()}
-                        checked={option.is_correct}
-                        onChange={() => {
-                          const updatedOptions = question.options?.map(
-                            (opt, i) => ({
-                              ...opt,
-                              is_correct: i === index,
-                            })
-                          );
-                          setQuestion((prevState) => ({
-                            ...prevState,
-                            options: updatedOptions,
-                          }));
-                        }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveOption(index)}
-                      >
-                        <X />
-                      </button>
+                      <div className="w-4/5 flex items-center gap-2">
+                        <RadioGroupItem value={`option-${index}`} disabled />
+                        <Input
+                          id={`name`}
+                          value={option.name}
+                          onChange={(e) => handleOptionChange(e, index)}
+                          placeholder="Untitled Option"
+                        />
+                      </div>
+                      <div className="w-1/5 flex items-center gap-2">
+                        <Label>Is Correct</Label>
+                        <input
+                          type="radio"
+                          name="correct_option"
+                          id={`is_correct`}
+                          value={index.toString()}
+                          checked={option.is_correct}
+                          onChange={() => {
+                            const updatedOptions = question.options?.map(
+                              (opt, i) => ({
+                                ...opt,
+                                is_correct: i === index,
+                              })
+                            );
+                            setQuestion((prevState) => ({
+                              ...prevState,
+                              options: updatedOptions,
+                            }));
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveOption(index)}
+                        >
+                          <X />
+                        </button>
+                      </div>
                     </div>
                   ))}
                   <div className="flex items-center space-x-2">
@@ -524,8 +598,16 @@ export default function AssignmentCreateForm({
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit">
-            <Save /> Create
+          <Button type="submit" disabled={isPending}>
+            {isPending ? (
+              <>
+                <Loader2 className="animate-spin" /> Creating
+              </>
+            ) : (
+              <>
+                <Save /> Create
+              </>
+            )}
           </Button>
         </CardFooter>
       </form>
