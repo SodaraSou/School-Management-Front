@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-
+import { useActionState, useEffect, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -13,37 +12,73 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { submitActivity } from "@/app/(dashboard)/activity/actions";
+import { toast } from "sonner";
 
 type Answer = {
-  questionId: string;
-  value: string;
+  question_id: string;
+  option_id: string | null;
+  text: string | null;
 };
 
 export default function ActivityForm({ activity }: { activity: any }) {
+  const initialState = { success: true, message: "" };
+  const [state, formAction, isPending] = useActionState(
+    submitActivity,
+    initialState
+  );
+
+  useEffect(() => {
+    if (!state.success) {
+      toast.error(state.message);
+    }
+  }, [state]);
+
   const [answers, setAnswers] = useState<Answer[]>([]);
 
-  const handleInputChange = (questionId: string, value: string) => {
+  const handleInputChange = (
+    question_id: string,
+    value: string,
+    type: string
+  ) => {
     setAnswers((prevAnswers) => {
       const existingAnswerIndex = prevAnswers.findIndex(
-        (answer) => answer.questionId === questionId
+        (answer) => answer.question_id === question_id
       );
       if (existingAnswerIndex !== -1) {
         const updatedAnswers = [...prevAnswers];
-        updatedAnswers[existingAnswerIndex].value = value;
+        if (type === "text") {
+          updatedAnswers[existingAnswerIndex].text = value;
+          updatedAnswers[existingAnswerIndex].option_id = null;
+        } else if (type === "qcm") {
+          updatedAnswers[existingAnswerIndex].option_id = value;
+          updatedAnswers[existingAnswerIndex].text = null;
+        }
         return updatedAnswers;
       } else {
-        return [...prevAnswers, { questionId, value }];
+        if (type === "text") {
+          return [
+            ...prevAnswers,
+            { question_id, text: value, option_id: null },
+          ];
+        } else if (type === "qcm") {
+          return [
+            ...prevAnswers,
+            { question_id, option_id: value, text: null },
+          ];
+        }
       }
+      return prevAnswers;
     });
   };
 
   const handleClearAnswer = (
     e: React.MouseEvent<HTMLButtonElement>,
-    questionId: string
+    question_id: string
   ) => {
     e.preventDefault();
     setAnswers((prevAnswers) =>
-      prevAnswers.filter((answer) => answer.questionId !== questionId)
+      prevAnswers.filter((answer) => answer.question_id !== question_id)
     );
   };
 
@@ -53,7 +88,20 @@ export default function ActivityForm({ activity }: { activity: any }) {
         <CardTitle>{activity.forms.title}</CardTitle>
         <CardDescription>{activity.forms.description}</CardDescription>
       </CardHeader>
-      <form action="">
+      <form action={formAction}>
+        <input
+          id="activity_id"
+          name="activity_id"
+          defaultValue={activity.id}
+          hidden
+        />
+        <input
+          id="answers"
+          name="answers"
+          value={JSON.stringify(answers)}
+          readOnly
+          hidden
+        />
         <CardContent>
           <div className="flex flex-col gap-6">
             {activity.forms.questions.map((question: any, index: number) => (
@@ -68,11 +116,11 @@ export default function ActivityForm({ activity }: { activity: any }) {
                     <Input
                       value={
                         answers.find(
-                          (answer) => answer.questionId === question.id
-                        )?.value || ""
+                          (answer) => answer.question_id === question.id
+                        )?.text || ""
                       }
                       onChange={(e) =>
-                        handleInputChange(question.id, e.target.value)
+                        handleInputChange(question.id, e.target.value, "text")
                       }
                       className="mb-2"
                     />
@@ -88,13 +136,22 @@ export default function ActivityForm({ activity }: { activity: any }) {
                             type="radio"
                             name={`question-${question.id}`}
                             value={option.id.toString()}
-                            checked={
+                            defaultChecked={
                               answers.find(
-                                (answer) => answer.questionId === question.id
-                              )?.value === option.id.toString()
+                                (answer) => answer.question_id === question.id
+                              )?.option_id === option.id.toString()
                             }
+                            // checked={
+                            //   answers.find(
+                            //     (answer) => answer.question_id === question.id
+                            //   )?.option_id === option.id.toString()
+                            // }
                             onChange={(e) =>
-                              handleInputChange(question.id, e.target.value)
+                              handleInputChange(
+                                question.id,
+                                e.target.value,
+                                "qcm"
+                              )
                             }
                           />
                           <Label>{option.name}</Label>
@@ -114,7 +171,7 @@ export default function ActivityForm({ activity }: { activity: any }) {
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="ml-auto">
+          <Button type="submit" className="ml-auto" disabled={isPending}>
             Submit
           </Button>
         </CardFooter>
