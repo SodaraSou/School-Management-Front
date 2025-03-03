@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { UserProvider } from "@/contexts/user-context";
 import { getCurrentUserV2 } from "@/lib/auth";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "PPTU",
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-[100dvh] bg-gray-50">
         <UserProvider userPromise={userPromise}>{children}</UserProvider>
+        <Toaster richColors closeButton />
       </body>
     </html>
   );
