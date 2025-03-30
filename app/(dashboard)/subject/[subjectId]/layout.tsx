@@ -14,7 +14,7 @@ export default function SubjectShowLayout({
   const user = use(userPromise);
 
   return (
-    <div className="container mx-auto p-4 flex flex-col gap-4">
+    <div className="container mx-auto flex flex-col gap-4">
       {user?.role[0] === "teacher" && teacher}
       {user?.role[0] === "student" && student}
     </div>

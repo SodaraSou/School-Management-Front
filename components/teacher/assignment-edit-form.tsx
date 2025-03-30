@@ -1,37 +1,9 @@
 "use client";
 
 import { useActionState, useState, useEffect } from "react";
-
-import {
-  FileText,
-  Plus,
-  X,
-  EllipsisVertical,
-  Edit,
-  Trash2,
-  Save,
-  Loader2,
-} from "lucide-react";
+import { Plus, X, Trash2, Save, Loader2, Copy } from "lucide-react";
 import { toast } from "sonner";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardTitle,
-  CardFooter,
-} from "../ui/card";
-import QuestionOptionMenu from "./question-option-menu";
-import { Badge } from "../ui/badge";
-import { createActivity } from "@/app/(dashboard)/activity/actions";
+import { createActivity } from "@/app/(dashboard)/_activity/actions";
 
 type Option = {
   name: string;
@@ -54,570 +26,289 @@ export default function AssignmentEditForm({ activity }: { activity: any }) {
     initialState
   );
 
-  console.log(activity);
-
   useEffect(() => {
     if (!state.success) {
       toast.error(state.message);
     }
   }, [state]);
 
-  const [questions, setQuestions] = useState<Question[]>([
-    ...activity.forms.questions,
-  ]);
+  const [title, setTitle] = useState(activity.forms.title);
+  const [description, setDescription] = useState(activity.forms.description);
+  const [questions, setQuestions] = useState<Question[]>(
+    activity.forms.questions
+  );
 
-  const [question, setQuestion] = useState<Question>({
-    name: "",
-    type: "text",
-    is_require: true,
-    correct_answer: "",
-    points: 0,
-    options: [],
-  });
-  const [editQuestion, setEditQuestion] = useState<Question>({
-    name: "",
-    type: "text",
-    is_require: true,
-    correct_answer: "",
-    points: 0,
-    options: [],
-  });
-  const [isEdit, setIsEdit] = useState(false);
-  const [isEditNumber, setIsEditNumber] = useState<Number>();
-
-  // Add Question
-  const handleOnChange = (e: { target: { id: string; value: string } }) => {
-    const { value, id } = e.target;
-    setQuestion((prevState) => ({
-      ...prevState,
-      [id]: value,
-    }));
-  };
-
-  const handleAddQuestion = (e: React.FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    let questionToInsert: Question = {
-      name: question.name,
-      type: question.type,
-      is_require: question.is_require,
-      correct_answer: question.correct_answer,
-      points: question.points,
-      options: question.options,
-    };
-    if (question.type === "question") {
-      questionToInsert = {
-        name: question.name,
-        type: question.type,
-        is_require: question.is_require,
-        correct_answer: question.correct_answer,
-        points: question.points,
-      };
-    }
-    setQuestions((prevQuestions) => [...prevQuestions, questionToInsert]);
-    setQuestion({
+  // Add new question
+  const handleAddQuestion = () => {
+    const newQuestion: Question = {
       name: "",
       type: "text",
       is_require: true,
       correct_answer: "",
       points: 0,
       options: [],
-    });
-  };
-
-  const handleRemoveQuestion = (index: number) => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.filter((_, i) => i !== index)
-    );
-  };
-
-  const handleOptionChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const { id, value } = e.target;
-    setQuestion((prevState) => {
-      const updatedOptions = [...(prevState.options || [])];
-      updatedOptions[index] = {
-        ...updatedOptions[index],
-        [id]: value,
-      };
-      return { ...prevState, options: updatedOptions };
-    });
-  };
-
-  const handleAddOption = (e: React.FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setQuestion((prevState) => ({
-      ...prevState,
-      options: [...(prevState.options || []), { name: "", is_correct: false }],
-    }));
-  };
-
-  const handleRemoveOption = (index: number) => {
-    setQuestion((prevState) => {
-      const updatedOptions = (prevState.options || []).filter(
-        (_, i) => i !== index
-      );
-      return { ...prevState, options: updatedOptions };
-    });
-  };
-
-  // Edit Question
-  const handleEditQuestion = (index: number, question: Question) => {
-    setIsEdit(true);
-    setIsEditNumber(index);
-    setEditQuestion(question);
-  };
-
-  const handleOnEditQuestion = (e: {
-    target: { id: string; value: string };
-  }) => {
-    const { value, id } = e.target;
-    setEditQuestion((prevState) => {
-      const updatedQuestion = {
-        ...prevState,
-        [id]: value,
-      };
-      if (id === "type" && value === "question") {
-        (updatedQuestion as Question).options = [];
-      }
-      return updatedQuestion;
-    });
-  };
-
-  const handleDoneEditQuestion = (index: number) => {
-    let questionToInsert: Question = {
-      name: editQuestion.name,
-      type: editQuestion.type,
-      is_require: editQuestion.is_require,
-      correct_answer: editQuestion.correct_answer,
-      points: editQuestion.points,
-      options: editQuestion.options,
     };
-    if (question.type === "question") {
-      questionToInsert = {
-        name: editQuestion.name,
-        type: editQuestion.type,
-        is_require: editQuestion.is_require,
-        correct_answer: editQuestion.correct_answer,
-        points: editQuestion.points,
+    setQuestions([...questions, newQuestion]);
+  };
+
+  // Duplicate question
+  const handleDuplicateQuestion = (index: number) => {
+    const questionToDuplicate = { ...questions[index] };
+    setQuestions([
+      ...questions.slice(0, index + 1),
+      questionToDuplicate,
+      ...questions.slice(index + 1),
+    ]);
+  };
+
+  // Remove question
+  const handleRemoveQuestion = (index: number) => {
+    setQuestions(questions.filter((_, i) => i !== index));
+  };
+
+  // Update question
+  const handleQuestionChange = (index: number, field: string, value: any) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions[index] = {
+      ...updatedQuestions[index],
+      [field]: value,
+    };
+    setQuestions(updatedQuestions);
+  };
+
+  // Add option to question
+  const handleAddOption = (questionIndex: number) => {
+    const updatedQuestions = [...questions];
+    const question = updatedQuestions[questionIndex];
+    question.options = [
+      ...(question.options || []),
+      { name: "", is_correct: false },
+    ];
+    setQuestions(updatedQuestions);
+  };
+
+  // Remove option from question
+  const handleRemoveOption = (questionIndex: number, optionIndex: number) => {
+    const updatedQuestions = [...questions];
+    const question = updatedQuestions[questionIndex];
+    question.options = question.options?.filter((_, i) => i !== optionIndex);
+    setQuestions(updatedQuestions);
+  };
+
+  // Update option
+  const handleOptionChange = (
+    questionIndex: number,
+    optionIndex: number,
+    value: string
+  ) => {
+    const updatedQuestions = [...questions];
+    const question = updatedQuestions[questionIndex];
+    if (question.options) {
+      question.options[optionIndex] = {
+        ...question.options[optionIndex],
+        name: value,
       };
     }
-    setQuestions((prevState) => {
-      const updatedQuestions = [...prevState];
-      updatedQuestions[index] = questionToInsert;
-      return updatedQuestions;
-    });
-    setIsEdit(false);
-    setIsEditNumber(undefined);
-    setEditQuestion({
-      name: "",
-      type: "question",
-      is_require: true,
-      correct_answer: "",
-      points: 0,
-      options: [],
-    });
-  };
-
-  const handleEditOptionChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    optionIndex: number
-  ) => {
-    const { id, value } = e.target;
-    setEditQuestion((prevState) => {
-      const updatedOptions = [...((prevState as Question).options || [])];
-      updatedOptions[optionIndex] = {
-        ...updatedOptions[optionIndex],
-        [id]: value,
-      };
-      return { ...(prevState as Question), options: updatedOptions };
-    });
-  };
-
-  const handleRemoveEditOption = (optionIndex: number) => {
-    setEditQuestion((prevState) => {
-      const updatedOptions =
-        (prevState as Question).options?.filter((_, i) => i !== optionIndex) ||
-        [];
-      return { ...(prevState as Question), options: updatedOptions };
-    });
-  };
-
-  const handleAddEditOption = (e: React.FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setEditQuestion((prevState) => ({
-      ...(prevState as Question),
-      options: [
-        ...((prevState as Question).options || []),
-        { name: "", is_correct: false },
-      ],
-    }));
+    setQuestions(updatedQuestions);
   };
 
   return (
-    <Card className="max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-2xl font-bold">
-          <FileText />
-        </CardTitle>
-      </CardHeader>
-      <form action={formAction}>
-        <input
-          id="activity_id"
-          name="activity_id"
-          defaultValue={activity.id}
-          hidden
-        />
-        {/* <input
-          id="subject_id"
-          name="subject_id"
-          defaultValue={subjectId}
-          hidden
-        />
-        <input id="group_id" name="group_id" defaultValue={groupId} hidden />
-        <input
-          id="activity_type"
-          name="activity_type"
-          defaultValue={type}
-          hidden
-        /> */}
-        <input
-          id="questions"
-          name="questions"
-          value={JSON.stringify(questions)}
-          readOnly
-          hidden
-        />
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label>Title</Label>
-            <Input
-              id="title"
-              name="title"
-              defaultValue={activity.forms.title}
-              placeholder="Title"
+    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow">
+      <div className="space-y-6">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Title
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {state.errors && (
-              <p>
-                {state.errors.title?.map((error: string, index: number) => (
-                  <span key={index} className="text-red-500">
-                    {error}
-                  </span>
-                ))}
-              </p>
-            )}
           </div>
-          <div className="space-y-2">
-            <Label>Description</Label>
-            <Input
-              id="description"
-              name="description"
-              defaultValue={activity.forms.description}
-              placeholder="Description"
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {state.errors && (
-              <p>
-                {state.errors.description?.map(
-                  (error: string, index: number) => (
-                    <span key={index} className="text-red-500">
-                      {error}
-                    </span>
-                  )
-                )}
-              </p>
-            )}
           </div>
-          {/* List of Questions */}
-          <div className="flex flex-col gap-4">
-            {questions.map((question, index) => (
-              <div
-                key={index}
-                className="w-full flex flex-col bg-gray-100 p-4 rounded-lg space-y-4"
-              >
-                {isEditNumber === index ? (
-                  <>
-                    <div className="flex justify-between gap-4">
-                      <div className="w-full flex flex-col gap-2">
-                        <Label>Question</Label>
-                        <Input
-                          id="name"
-                          name="name"
-                          defaultValue={(editQuestion as Question).name}
-                          onChange={handleOnEditQuestion}
-                          className="py-6"
-                          placeholder="Untitled Question"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <Label>Type</Label>
-                        <QuestionOptionMenu
-                          handleOnChange={handleOnEditQuestion}
-                          defaultValue={(editQuestion as Question).type}
-                        />
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <Label>Point</Label>
-                        <Input
-                          id="points"
-                          name="points"
-                          className="py-6"
-                          placeholder="Point"
-                          type="number"
-                          defaultValue={editQuestion.points}
-                          onChange={handleOnEditQuestion}
-                        />
-                      </div>
-                    </div>
-                    {(editQuestion as Question).type === "text" ? (
-                      <div>Question</div>
-                    ) : (
-                      <RadioGroup className="flex flex-col gap-4">
-                        {(editQuestion as Question).options?.map(
-                          (option, index) => (
-                            <div
-                              key={index}
-                              className="flex items-center space-x-2"
-                            >
-                              <div className="w-4/5 flex items-center gap-2">
-                                <RadioGroupItem
-                                  value={`option-${index}`}
-                                  disabled
-                                />
-                                <Input
-                                  id={`name`}
-                                  value={option.name}
-                                  onChange={(e) =>
-                                    handleEditOptionChange(e, index)
-                                  }
-                                  placeholder="Untitled Option"
-                                />
-                              </div>
-                              <div className="w-1/5 flex items-center gap-2">
-                                <Label>Is Correct</Label>
-                                <input
-                                  type="radio"
-                                  name="correct_option"
-                                  id={`is_correct`}
-                                  value={index.toString()}
-                                  checked={option.is_correct}
-                                  onChange={() => {
-                                    const updatedOptions = (
-                                      editQuestion as Question
-                                    ).options?.map((opt, i) => ({
-                                      ...opt,
-                                      is_correct: i === index,
-                                    }));
-                                    setEditQuestion((prevState) => ({
-                                      ...(prevState as Question),
-                                      options: updatedOptions,
-                                    }));
-                                  }}
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => handleRemoveEditOption(index)}
-                                >
-                                  <X />
-                                </button>
-                              </div>
-                            </div>
+        </div>
+
+        <div className="space-y-4">
+          {questions.map((question, questionIndex) => (
+            <div
+              key={questionIndex}
+              className="p-6 border border-gray-200 rounded-lg space-y-4"
+            >
+              <div className="flex justify-between items-start">
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Question
+                    </label>
+                    <input
+                      type="text"
+                      value={question.name}
+                      onChange={(e) =>
+                        handleQuestionChange(
+                          questionIndex,
+                          "name",
+                          e.target.value
+                        )
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Type
+                      </label>
+                      <select
+                        value={question.type}
+                        onChange={(e) =>
+                          handleQuestionChange(
+                            questionIndex,
+                            "type",
+                            e.target.value
                           )
-                        )}
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="add-option" disabled />
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="text">Text</option>
+                        <option value="multiple_choice">Multiple Choice</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Points
+                      </label>
+                      <input
+                        type="number"
+                        value={question.points}
+                        onChange={(e) =>
+                          handleQuestionChange(
+                            questionIndex,
+                            "points",
+                            e.target.value
+                          )
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  {question.type === "multiple_choice" && (
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Options
+                      </label>
+                      {question.options?.map((option, optionIndex) => (
+                        <div
+                          key={optionIndex}
+                          className="flex items-center gap-2"
+                        >
+                          <input
+                            type="text"
+                            value={option.name}
+                            onChange={(e) =>
+                              handleOptionChange(
+                                questionIndex,
+                                optionIndex,
+                                e.target.value
+                              )
+                            }
+                            placeholder="Option"
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
                           <button
-                            type="button"
-                            onClick={handleAddEditOption}
-                            className="text-sm"
+                            onClick={() =>
+                              handleRemoveOption(questionIndex, optionIndex)
+                            }
+                            className="p-2 text-gray-500 hover:text-red-500 rounded-full transition-colors"
                           >
-                            Add Option
+                            <X className="h-5 w-5" />
                           </button>
                         </div>
-                      </RadioGroup>
-                    )}
-                    <div className="ml-auto">
-                      <Button onClick={() => handleDoneEditQuestion(index)}>
-                        <Edit /> Done
-                      </Button>
+                      ))}
+                      <button
+                        onClick={() => handleAddOption(questionIndex)}
+                        className="flex items-center text-sm text-blue-600 hover:text-blue-700"
+                      >
+                        <Plus className="h-4 w-4 mr-1" /> Add Option
+                      </button>
                     </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex justify-between gap-4">
-                      <p>{question.name || "Untitled Question"}</p>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="ghost" size="icon" disabled={isEdit}>
-                            <EllipsisVertical />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent align="end" className="w-auto">
-                          <div className="flex flex-col gap-4">
-                            <button
-                              onClick={() =>
-                                handleEditQuestion(index, question)
-                              }
-                              className="flex items-center gap-2"
-                            >
-                              <Edit width={16} height={16} /> Edit
-                            </button>
+                  )}
+                </div>
 
-                            <button
-                              onClick={() => handleRemoveQuestion(index)}
-                              className="flex items-center gap-2"
-                            >
-                              <Trash2 width={16} height={16} /> Remove
-                            </button>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                    {question.type === "text" ? (
-                      <div>Question</div>
-                    ) : (
-                      <RadioGroup className="flex flex-col gap-4">
-                        {question.options?.map((option, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center space-x-2"
-                          >
-                            <RadioGroupItem
-                              value={`option-${index}`}
-                              disabled
-                            />
-                            <Label>{option.name}</Label>{" "}
-                            {option.is_correct && (
-                              <Badge
-                                variant="outline"
-                                className="bg-transparent border border-green-500 text-green-500"
-                              >
-                                Correct Answer
-                              </Badge>
-                            )}
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    )}
-                  </>
-                )}
-              </div>
-            ))}
-            {/* Create Question */}
-            <div className="w-full flex flex-col bg-gray-100 p-4 rounded-lg space-y-4">
-              <div className="flex justify-between gap-4">
-                <div className="w-full flex flex-col gap-2">
-                  <Label>Quesiton</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={question.name}
-                    onChange={handleOnChange}
-                    className="py-6"
-                    placeholder="Untitled Question"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Label>Type</Label>
-                  <QuestionOptionMenu
-                    handleOnChange={handleOnChange}
-                    defaultValue={question.type}
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Label>Point</Label>
-                  <Input
-                    id="points"
-                    name="points"
-                    className="py-6"
-                    placeholder="Point"
-                    type="number"
-                    value={question.points}
-                    onChange={handleOnChange}
-                  />
+                <div className="flex gap-2 ml-4">
+                  <button
+                    onClick={() => handleDuplicateQuestion(questionIndex)}
+                    className="p-2 text-gray-500 hover:text-blue-500 rounded-full transition-colors"
+                    title="Duplicate question"
+                  >
+                    <Copy className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => handleRemoveQuestion(questionIndex)}
+                    className="p-2 text-gray-500 hover:text-red-500 rounded-full transition-colors"
+                    title="Remove question"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
                 </div>
               </div>
-              {question.type === "text" ? (
-                <div>Question</div>
-              ) : (
-                <RadioGroup className="flex flex-col gap-4">
-                  {question.options?.map((option, index) => (
-                    <div key={index} className="flex items-center space-x-2">
-                      <div className="w-4/5 flex items-center gap-2">
-                        <RadioGroupItem value={`option-${index}`} disabled />
-                        <Input
-                          id={`name`}
-                          value={option.name}
-                          onChange={(e) => handleOptionChange(e, index)}
-                          placeholder="Untitled Option"
-                        />
-                      </div>
-                      <div className="w-1/5 flex items-center gap-2">
-                        <Label>Is Correct</Label>
-                        <input
-                          type="radio"
-                          name="correct_option"
-                          id={`is_correct`}
-                          value={index.toString()}
-                          checked={option.is_correct}
-                          onChange={() => {
-                            const updatedOptions = question.options?.map(
-                              (opt, i) => ({
-                                ...opt,
-                                is_correct: i === index,
-                              })
-                            );
-                            setQuestion((prevState) => ({
-                              ...prevState,
-                              options: updatedOptions,
-                            }));
-                          }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveOption(index)}
-                        >
-                          <X />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="add-option" disabled />
-                    <button
-                      type="button"
-                      onClick={handleAddOption}
-                      className="text-sm"
-                    >
-                      Add Option
-                    </button>
-                  </div>
-                </RadioGroup>
-              )}
-              <Button
-                onClick={handleAddQuestion}
-                className="ml-auto"
-                disabled={isEdit}
-              >
-                <Plus /> Add
-              </Button>
             </div>
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button type="submit" disabled={isPending}>
+          ))}
+
+          <button
+            onClick={handleAddQuestion}
+            className="w-full py-3 px-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:text-gray-900 hover:border-gray-400 flex items-center justify-center transition-colors"
+          >
+            <Plus className="h-5 w-5 mr-2" /> Add New Question
+          </button>
+        </div>
+
+        <form action={formAction}>
+          <input name="activity_id" value={activity.id} hidden readOnly />
+          <input name="title" value={title} hidden readOnly />
+          <input name="description" value={description} hidden readOnly />
+          <input
+            name="questions"
+            value={JSON.stringify(questions)}
+            hidden
+            readOnly
+          />
+
+          <button
+            type="submit"
+            disabled={isPending}
+            className={`w-full py-3 px-4 bg-blue-600 text-white rounded-lg flex items-center justify-center transition-colors ${
+              isPending ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-700"
+            }`}
+          >
             {isPending ? (
               <>
-                <Loader2 className="animate-spin" /> Creating
+                <Loader2 className="animate-spin h-5 w-5 mr-2" /> Updating
+                Assignment...
               </>
             ) : (
               <>
-                <Save /> Create
+                <Save className="h-5 w-5 mr-2" /> Update Assignment
               </>
             )}
-          </Button>
-        </CardFooter>
-      </form>
-    </Card>
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }

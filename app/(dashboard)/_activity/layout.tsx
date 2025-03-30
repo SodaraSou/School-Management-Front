@@ -1,7 +1,7 @@
 "use client";
 
-import { use } from "react";
 import { useUser } from "@/contexts/user-context";
+import { use } from "react";
 
 export default function ActivityLayout({
   teacher,
@@ -14,9 +14,10 @@ export default function ActivityLayout({
   const user = use(userPromise);
 
   return (
-    <div className="container mx-auto p-4 flex flex-col gap-4">
+    <div className="max-w-4xl mx-auto p-4 flex flex-col gap-4">
       {user?.role[0] === "teacher" && teacher}
       {user?.role[0] === "student" && student}
     </div>
   );
+
 }

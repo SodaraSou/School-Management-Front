@@ -1,95 +1,105 @@
 "use client";
 
-import { use, useState } from "react";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { use } from "react";
 import { useUser } from "@/contexts/user-context";
 
-import { Users, Activity, Menu, Notebook, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import AppHeader from "@/components/app-header";
+import DashboardSidebar from "@/components/dashboard-sidebar";
+import DashboardHeader from "@/components/dashboard-header";
 
 export default function UserLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { userPromise } = useUser();
   const user = use(userPromise);
 
-  // const navItems = [
-  //   { href: "/teacher", icon: Users, label: "Group" },
-  //   { href: "/teacher/assignment", icon: Notebook, label: "Assignment" },
-  //   { href: "/teacher/activity", icon: Activity, label: "Activity" },
-  //   { href: "/teacher/profile", icon: User, label: "Profile" },
-  // ];
-
-  const teacherNavItems = [
-    { href: "/subject", icon: Users, label: "Subject" },
-    { href: "/assignment", icon: Notebook, label: "Assignment" },
-    { href: "/profile", icon: User, label: "Profile" },
+  const courses = [
+    {
+      id: 1,
+      name: "Introduction to Programming",
+      code: "CS101",
+      progress: 65,
+      instructor: "Dr. Sarah Chen",
+    },
+    {
+      id: 2,
+      name: "Data Structures",
+      code: "CS201",
+      progress: 78,
+      instructor: "Prof. Michael Williams",
+    },
+    {
+      id: 3,
+      name: "Web Development",
+      code: "CS301",
+      progress: 42,
+      instructor: "Dr. James Rodriguez",
+    },
+    {
+      id: 4,
+      name: "Machine Learning",
+      code: "CS401",
+      progress: 90,
+      instructor: "Prof. Emma Garcia",
+    },
   ];
 
-  const studentNavItems = [
-    { href: "/group", icon: Users, label: "Group" },
-    { href: "/assignment", icon: Notebook, label: "Assignment" },
-    { href: "/profile", icon: User, label: "Profile" },
+  const upcomingAssignments = [
+    {
+      id: 1,
+      title: "Programming Exercise #5",
+      course: "CS101",
+      due: "Tomorrow, 11:59 PM",
+      status: "Not started",
+    },
+    {
+      id: 2,
+      title: "Group Project Milestone",
+      course: "CS301",
+      due: "Mar 07, 11:59 PM",
+      status: "In progress",
+    },
+    {
+      id: 3,
+      title: "Data Analysis Report",
+      course: "CS401",
+      due: "Mar 10, 11:59 PM",
+      status: "Not started",
+    },
   ];
 
-  const navItems =
-    user?.role[0] === "teacher" ? teacherNavItems : studentNavItems;
+  const recentGrades = [
+    {
+      id: 1,
+      title: "Programming Quiz #3",
+      course: "CS101",
+      grade: "92/100",
+      submitted: "Feb 28, 2025",
+    },
+    {
+      id: 2,
+      title: "Data Structures Assignment",
+      course: "CS201",
+      grade: "85/100",
+      submitted: "Feb 25, 2025",
+    },
+    {
+      id: 3,
+      title: "Web Development Lab",
+      course: "CS301",
+      grade: "78/100",
+      submitted: "Feb 20, 2025",
+    },
+  ];
+
   return (
-    <section className="flex flex-col min-h-screen">
-      <AppHeader user={user!} />
-      <div className="flex flex-col min-h-[calc(100dvh-68px)] max-w-7xl mx-auto w-full">
-        {/* Mobile header */}
-        <div className="lg:hidden flex items-center justify-between bg-white border-b border-gray-200 p-4">
-          <div className="flex items-center">
-            <span className="font-medium">Settings</span>
-          </div>
-          <Button
-            className="-mr-3"
-            variant="ghost"
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          >
-            <Menu className="h-6 w-6" />
-            <span className="sr-only">Toggle sidebar</span>
-          </Button>
-        </div>
-
-        <div className="flex flex-1 overflow-hidden h-full">
-          {/* Sidebar */}
-          <aside
-            className={`w-64 bg-white lg:bg-gray-50 border-r border-gray-200 lg:block ${
-              isSidebarOpen ? "block" : "hidden"
-            } lg:relative absolute inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-              isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-            }`}
-          >
-            <nav className="h-full overflow-y-auto p-4">
-              {navItems.map((item) => (
-                <Link key={item.href} href={item.href} passHref>
-                  <Button
-                    variant={pathname === item.href ? "secondary" : "ghost"}
-                    className={`shadow-none my-1 w-full justify-start ${
-                      pathname === item.href ? "bg-gray-100" : ""
-                    }`}
-                    onClick={() => setIsSidebarOpen(false)}
-                  >
-                    <item.icon className="mr-2 h-4 w-4" />
-                    {item.label}
-                  </Button>
-                </Link>
-              ))}
-            </nav>
-          </aside>
-
-          {/* Main content */}
-          <main className="flex-1 overflow-y-auto p-0 lg:p-4">{children}</main>
-        </div>
+    <div className="min-h-screen bg-gray-50">
+      <DashboardHeader user={user} />
+      <div className="flex">
+        <DashboardSidebar user={user} />
+        <main className="flex-1 p-6">{children}</main>
       </div>
-    </section>
+    </div>
   );
 }

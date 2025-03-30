@@ -32,24 +32,57 @@ export default function AssignmentItem({ activity }: { activity: any }) {
     Submitted: <CheckCircleIcon className="h-4 w-4" />,
   };
 
+  // return (
+  //   <Link href={`/activity/${activity.id}`}>
+  //     <Card>
+  //       <CardHeader>
+  //         <CardTitle className="flex items-center justify-between">
+  //           <span>{activity.forms.title}</span>
+  //           <Badge variant="secondary">
+  //             <span className="ml-1"></span>
+  //           </Badge>
+  //         </CardTitle>
+  //       </CardHeader>
+  //       <CardContent>
+  //         <div className="flex items-center text-sm text-muted-foreground">
+  //           <CalendarIcon className="mr-2 h-4 w-4" />
+  //           Due:
+  //         </div>
+  //       </CardContent>
+  //     </Card>
+  //   </Link>
+  // );
+
   return (
-    <Link href={`/activity/${activity.id}`}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>{activity.forms.title}</span>
-            <Badge variant="secondary">
-              <span className="ml-1"></span>
-            </Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center text-sm text-muted-foreground">
-            <CalendarIcon className="mr-2 h-4 w-4" />
+    <div className="border p-4 rounded-lg">
+      <div className="flex justify-between">
+        <div>
+          <h3 className="font-bold text-lg">{activity.forms.title}</h3>
+          <p className="text-sm text-gray-500">{/* {assignment.course} */}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-sm font-medium">
             Due:
-          </div>
-        </CardContent>
-      </Card>
-    </Link>
+            {/* {assignment.due} */}
+          </p>
+          {/* <span
+            className={`inline-block px-2 py-1 rounded text-xs ${
+              assignment.status === "Not started"
+                ? "bg-red-100 text-red-800"
+                : assignment.status === "In progress"
+                ? "bg-yellow-100 text-yellow-800"
+                : "bg-green-100 text-green-800"
+            }`}
+          >
+            {assignment.status}
+          </span> */}
+        </div>
+      </div>
+      <div className="mt-4 flex justify-end">
+        <Button asChild>
+          <Link href={`/activity/${activity.id}`}>Open Activity</Link>
+        </Button>
+      </div>
+    </div>
   );
 }
