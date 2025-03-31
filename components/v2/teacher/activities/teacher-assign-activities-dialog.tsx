@@ -22,17 +22,23 @@ export default function TeacherAssignActivitiesDialog({
   groups,
   handleAssignGroupToActivity,
   defaultGroupId,
+  defaultGroups,
 }: {
   groups: any;
   handleAssignGroupToActivity: (groups: any[]) => void;
   defaultGroupId?: string;
+  defaultGroups?: any[];
 }) {
-  if (!groups.success) {
+  if (groups.success === false) {
     throw new Error(groups.message);
   }
 
   const [selectedGroups, setSelectedGroups] = useState<number[]>(
-    defaultGroupId ? [Number(defaultGroupId)] : []
+    defaultGroupId
+      ? [Number(defaultGroupId)]
+      : defaultGroups
+      ? defaultGroups.map((group) => group.id)
+      : []
   );
 
   const handleGroupSelect = (groupId: number) => {

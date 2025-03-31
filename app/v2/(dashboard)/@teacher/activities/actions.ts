@@ -13,24 +13,17 @@ export const createActivity = async (prevState: any, formData: FormData) => {
   }
 
   const activityTypeId = formData.get("activity_type");
-  console.log(activityTypeId);
   const dueDateString = formData.get("due_date") as string;
   const dueDate = dueDateString
     ? format(new Date(dueDateString), "yyyy-MM-dd HH:mm")
     : null;
-  console.log(dueDate);
   const duration = formData.get("duration");
-  console.log(duration);
   const title = formData.get("title");
-  console.log(title);
   const description = formData.get("description");
-  console.log(description);
   const questionsString = formData.get("questions") as string;
   const questions = JSON.parse(questionsString);
-  console.log(questions);
   const groupsString = formData.get("groups") as string;
   const groups = JSON.parse(groupsString);
-  console.log(groups);
 
   try {
     const res = await fetch(`${BACKEND_URL}/api/v2/teacher/activities`, {
@@ -52,6 +45,7 @@ export const createActivity = async (prevState: any, formData: FormData) => {
     });
     const data = await res.json();
     if (!res.ok) {
+      console.log(res);
       return {
         success: false,
         message: `Error ${res.status}: ${data.message}`,
@@ -74,46 +68,41 @@ export const updateActivity = async (prevState: any, formData: FormData) => {
     throw new Error("Unauthorized: No token found.");
   }
 
-  const activityTypeId = formData.get("activity_type");
-  console.log(activityTypeId);
   const dueDateString = formData.get("due_date") as string;
   const dueDate = dueDateString
     ? format(new Date(dueDateString), "yyyy-MM-dd HH:mm")
     : null;
-  console.log(dueDate);
   const duration = formData.get("duration");
-  console.log(duration);
   const title = formData.get("title");
-  console.log(title);
   const description = formData.get("description");
-  console.log(description);
   const questionsString = formData.get("questions") as string;
   const questions = JSON.parse(questionsString);
-  console.log(questions);
   const groupsString = formData.get("groups") as string;
   const groups = JSON.parse(groupsString);
-  console.log(groups);
+  const activityId = formData.get("activity_id") as string;
 
   try {
-    const res = await fetch(`${BACKEND_URL}/api/v2/teacher/activities`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        activity_type_id: activityTypeId,
-        due_at: dueDate,
-        duration,
-        title,
-        description,
-        group_ids: groups,
-        questions: questions,
-      }),
-    });
+    const res = await fetch(
+      `${BACKEND_URL}/api/v2/teacher/activities/${activityId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          duration,
+          due_at: dueDate,
+          title,
+          description,
+          questions: questions,
+        }),
+      }
+    );
     const data = await res.json();
     if (!res.ok) {
+      console.log(res);
       return {
         success: false,
         message: `Error ${res.status}: ${data.message}`,

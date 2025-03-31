@@ -1,7 +1,7 @@
 import { type BreadcrumbItem } from "@/types";
 
 import TeacherLayout from "@/components/v2/teacher/layout/teacher-layout";
-import { fetchActivityById } from "@/services/activity";
+import { fetchTeacherActivityById } from "@/app/v2/(dashboard)/@teacher/activities/services";
 
 export default async function TeacherActivitiesById({
   params,
@@ -21,13 +21,14 @@ export default async function TeacherActivitiesById({
     },
   ];
 
-  const result = await fetchActivityById(id);
+  const result = await fetchTeacherActivityById(id);
 
   if (!result.success) {
     throw new Error(result.message);
   }
 
   console.log(result);
+  
 
   return (
     <TeacherLayout breadcrumbs={breadcrumbs}>

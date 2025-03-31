@@ -1,3 +1,6 @@
+import { fetchTeacherGroups } from "@/app/v2/(dashboard)/@teacher/groups/services";
+import { fetchTeacherActivityById } from "@/app/v2/(dashboard)/@teacher/activities/services";
+import { fetchActivityTypes } from "@/services/activity-type";
 import { type BreadcrumbItem } from "@/types";
 
 import TeacherLayout from "@/components/v2/teacher/layout/teacher-layout";
@@ -25,9 +28,19 @@ export default async function TeacherActivitiesEdit({
     },
   ];
 
+  const result = await Promise.all([
+    fetchTeacherActivityById(id),
+    fetchTeacherGroups(),
+    fetchActivityTypes(),
+  ]);
+
   return (
     <TeacherLayout breadcrumbs={breadcrumbs}>
-      <TeacherEditActivitiesForm />
+      <TeacherEditActivitiesForm
+        activity={result[0]}
+        teacherGroups={result[1]}
+        activitiesType={result[2]}
+      />
     </TeacherLayout>
   );
 }

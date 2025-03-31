@@ -55,7 +55,7 @@ export const fetchTeacherActivityById = async (id: string) => {
         message: `Error ${res.status}: ${data.message}`,
       };
     }
-    return { success: true, data: data.data };
+    return { success: true, data: data };
   } catch (error: any) {
     console.error(error);
     return { success: false, message: `Error: ${error.message}` };
