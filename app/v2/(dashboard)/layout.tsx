@@ -1,6 +1,7 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useUser } from "@/contexts/user-context";
 
 export default function DashboardLayout({
@@ -12,6 +13,17 @@ export default function DashboardLayout({
 }) {
   const { userPromise } = useUser();
   const user = use(userPromise);
+
+  const router = useRouter();
+  useEffect(() => {
+    if (!user) {
+      router.push("/sign-in");
+    }
+  }, [user, router]);
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <>

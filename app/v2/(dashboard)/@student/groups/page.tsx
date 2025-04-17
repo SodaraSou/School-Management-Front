@@ -21,7 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import TeacherLayout from "@/components/v2/teacher/layout/teacher-layout";
+import StudentLayout from "@/components/v2/student/layout/student-layout";
+import { fetchStudentGroups } from "@/app/v2/(dashboard)/@student/groups/services";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -30,84 +31,26 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
 ];
 
-export default async function TeacherGroups() {
-  const result = await fetchTeacherGroups();
+export default async function StudentGroups() {
+  const result = await fetchStudentGroups();
 
   if (result.success === false) {
     throw new Error(result.message);
   }
 
+  console.log(result);
+
   return (
-    <TeacherLayout breadcrumbs={breadcrumbs}>
+    <StudentLayout breadcrumbs={breadcrumbs}>
       <div className="flex flex-col gap-6">
-        <header className="flex items-center justify-between p-6 bg-indigo-100 rounded-lg">
-          <div>
-            <h1 className="mb-2 text-4xl font-extrabold text-indigo-600">
+        <Card className="overflow-hidden">
+          <CardHeader className="bg-indigo-100">
+            <CardTitle className="text-4xl font-extrabold text-indigo-600">
               My Groups
-            </h1>
-            <p className="text-lg text-gray-600">
-              Quickly manage and view your group details.
-            </p>
-          </div>
-        </header>
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <div className="relative w-full md:w-72">
-            <Search className="absolute w-4 h-4 transform -translate-y-1/2 left-3 top-1/2 text-muted-foreground" />
-            <Input placeholder="Search groups..." className="pl-10" />
-          </div>
-          <div className="flex flex-wrap w-full gap-2 md:w-auto">
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-indigo-600" />
-              {/* <select className="px-3 py-1 text-sm bg-white border rounded-md">
-                <option value="">All Subjects</option>
-                <option value="Mathematics">Mathematics</option>
-                <option value="Physics">Physics</option>
-                <option value="Chemistry">Chemistry</option>
-                <option value="Biology">Biology</option>
-                <option value="Computer Science">Computer Science</option>
-              </select> */}
-              <Select>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Filter Group" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Groups</SelectLabel>
-                    <SelectItem value="apple">Apple</SelectItem>
-                    <SelectItem value="banana">Banana</SelectItem>
-                    <SelectItem value="blueberry">Blueberry</SelectItem>
-                    <SelectItem value="grapes">Grapes</SelectItem>
-                    <SelectItem value="pineapple">Pineapple</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-indigo-600" />
-              {/* <select className="px-3 py-1 text-sm bg-white border rounded-md">
-                <option value="">All Years</option>
-                <option value="Year 1">Year 1</option>
-                <option value="Year 2">Year 2</option>
-                <option value="Year 3">Year 3</option>
-              </select> */}
-              <Select>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Filter Year" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Years</SelectLabel>
-                    <SelectItem value="apple">Year 1</SelectItem>
-                    <SelectItem value="banana">Year 2</SelectItem>
-                    <SelectItem value="blueberry">Year 3</SelectItem>
-                    <SelectItem value="grapes">Year 4</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            </CardTitle>
+          </CardHeader>
+        </Card>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {result.data.map((group: any) => (
             <Card key={group.id} className="overflow-hidden">
               <CardHeader className={`border-b bg-indigo-50`}>
@@ -166,14 +109,7 @@ export default async function TeacherGroups() {
                   className="w-full border-indigo-200 hover:bg-indigo-50 hovernderline"
                   asChild
                 >
-                  <Link
-                    href={{
-                      pathname: `/v2/groups/${group.id}`,
-                      query: { subject_id: group.subject.id },
-                    }}
-                  >
-                    View Details
-                  </Link>
+                  <Link href={`/v2/groups/${group.id}`}>View Details</Link>
                 </Button>
                 {/* <Button
                   className="w-full ml-auto text-white bg-indigo-600 hover:bg-indigo-700"
@@ -186,6 +122,6 @@ export default async function TeacherGroups() {
           ))}
         </div>
       </div>
-    </TeacherLayout>
+    </StudentLayout>
   );
 }

@@ -104,17 +104,17 @@ export default function TeacherAssignActivitiesDialog({
           </div>
           <Separator orientation="vertical" className="hidden md:block" />
           <div className="w-full md:w-1/2 flex flex-col gap-2">
-            <h3 className="text-lg font-medium">Activity Details</h3>
+            <h3 className="text-lg font-medium">Groups Selected</h3>
             {selectedGroups.length > 0 ? (
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">
                   You've selected {selectedGroups.length} group(s) to assign
                   activities to
                 </p>
-                {/* Activity selection form would go here */}
-                <div className="space-y-2">
-                  <h4 className="text-sm font-medium">Choose Activities</h4>
-                  {/* Activity selection components would go here */}
+                <div className="flex flex-wrap gap-2">
+                  {selectedGroups.map((groupId: number) => (
+                    <p>{groupId}</p>
+                  ))}
                 </div>
               </div>
             ) : (

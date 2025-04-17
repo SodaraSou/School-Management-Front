@@ -13,6 +13,7 @@ export const createActivity = async (prevState: any, formData: FormData) => {
   }
 
   const activityTypeId = formData.get("activity_type");
+  const subjectId = formData.get("subject_id");
   const dueDateString = formData.get("due_date") as string;
   const dueDate = dueDateString
     ? format(new Date(dueDateString), "yyyy-MM-dd HH:mm")
@@ -35,6 +36,7 @@ export const createActivity = async (prevState: any, formData: FormData) => {
       },
       body: JSON.stringify({
         activity_type_id: activityTypeId,
+        subject_id: subjectId,
         due_at: dueDate,
         duration,
         title,
@@ -96,6 +98,7 @@ export const updateActivity = async (prevState: any, formData: FormData) => {
           due_at: dueDate,
           title,
           description,
+          group_ids: groups,
           questions: questions,
         }),
       }

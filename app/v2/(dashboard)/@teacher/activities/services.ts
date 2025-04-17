@@ -50,6 +50,40 @@ export const fetchTeacherActivityById = async (id: string) => {
     });
     const data = await res.json();
     if (!res.ok) {
+      console.error(res);
+      return {
+        success: false,
+        message: `Error ${res.status}: ${data.message}`,
+      };
+    }
+    return { success: true, data: data };
+  } catch (error: any) {
+    console.error(error);
+    return { success: false, message: `Error: ${error.message}` };
+  }
+};
+
+export const fetchTeacherActivityDashboardById = async (id: string) => {
+  const token = (await cookies()).get("session")?.value;
+  if (!token) {
+    throw new Error("Unauthorized: No token found.");
+  }
+
+  try {
+    const res = await fetch(
+      `${BACKEND_URL}/api/v2/teacher/activities/${id}/dashboard`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await res.json();
+    if (!res.ok) {
+      console.error(res);
       return {
         success: false,
         message: `Error ${res.status}: ${data.message}`,

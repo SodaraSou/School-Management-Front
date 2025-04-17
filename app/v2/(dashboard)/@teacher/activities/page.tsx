@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { format } from "date-fns";
 import { fetchTeacherActivities } from "@/app/v2/(dashboard)/@teacher/activities/services";
 import { type BreadcrumbItem } from "@/types";
@@ -19,7 +20,6 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import TeacherLayout from "@/components/v2/teacher/layout/teacher-layout";
-import Link from "next/link";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -34,6 +34,8 @@ export default async function TeacherActivities() {
   if (result[0].success === false) {
     throw new Error(result[0].message);
   }
+
+  console.log(result[0]);
 
   return (
     <TeacherLayout breadcrumbs={breadcrumbs}>
@@ -137,7 +139,7 @@ export default async function TeacherActivities() {
               {result[0].data.map((activity: any) => (
                 <Card key={activity.id}>
                   <CardHeader>
-                    <CardTitle className="text-2xl font-bold text-indigo-700">
+                    <CardTitle className="text-2xl font-bold text-indigo-600">
                       {activity.title}
                     </CardTitle>
                     <div className="flex gap-4">

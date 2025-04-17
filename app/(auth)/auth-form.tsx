@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useActionState } from "react";
 import Link from "next/link";
+import { useActionState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 import { signIn, signUp } from "./actions";
 
-import { School } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,10 +15,22 @@ export default function AuthForm({
 }: {
   mode?: "sign-in" | "sign-up";
 }) {
-  const [state, formAction] = useActionState(
+  const initialState = { success: true, message: "", errors: {} };
+  const [state, formAction, isPending] = useActionState(
     mode === "sign-in" ? signIn : signUp,
-    null
+    initialState
   );
+
+  const { toast } = useToast();
+  useEffect(() => {
+    if (state.success === false) {
+      toast({
+        title: "Error",
+        description: state.message,
+        variant: "destructive",
+      });
+    }
+  }, [state]);
 
   return (
     <div className="w-full lg:grid lg:grid-cols-2 min-h-screen">
@@ -38,13 +50,11 @@ export default function AuthForm({
               {mode === "sign-in" ? "Sign In" : "Sign Up"}
             </h1>
           </div>
-          {state?.message && <p>{state?.message}</p>}
           <form action={formAction} className="grid gap-4">
             {mode === "sign-up" && (
               <div className="grid gap-2">
                 <Label htmlFor="name">Name</Label>
                 <Input id="name" type="name" placeholder="Name" name="name" />
-                {/* {state?.name && <p>{state?.name}</p>} */}
               </div>
             )}
             <div className="grid gap-2">
@@ -84,6 +94,7 @@ export default function AuthForm({
               type="submit"
               className="w-full bg-blue-500 text-white"
               variant={"outline"}
+              disabled={isPending}
             >
               {mode === "sign-in" ? "Sign In" : "Sign Up"}
             </Button>

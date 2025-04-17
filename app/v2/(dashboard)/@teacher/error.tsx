@@ -1,8 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import TeacherLayout from "@/components/v2/teacher/layout/teacher-layout";
-import { useEffect } from "react";
 
 export default function TeacherError({
   error,
@@ -17,16 +17,16 @@ export default function TeacherError({
 
   return (
     <TeacherLayout>
-      <div className="flex flex-col items-center justify-center bg-gray-50 px-4 py-10">
-        <h1 className="text-4xl font-bold text-red-600 mb-4">
+      <div className="flex flex-col items-center justify-center px-4 py-10 bg-gray-50">
+        <h1 className="mb-4 text-4xl font-bold text-red-600">
           Oops! Something went wrong.
         </h1>
-        <p className="text-lg font-medium mb-4 text-center max-w-2xl">
+        <p className="max-w-2xl mb-4 text-lg font-medium text-center">
           {error.message}
         </p>
         <Button
           onClick={reset}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-500 transition"
+          className="px-6 py-3 text-white transition bg-blue-600 rounded-lg shadow hover:bg-blue-500"
         >
           Retry
         </Button>

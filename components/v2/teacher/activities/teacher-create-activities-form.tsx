@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useActionState } from "react";
-import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -236,23 +236,16 @@ export default function TeacherCreateActivitiesForm({
     initialState
   );
 
+  const { toast } = useToast();
   useEffect(() => {
     if (state.success === false) {
-      alert(state.message);
+      toast({
+        title: "Error",
+        description: state.message,
+        variant: "destructive",
+      });
     }
   }, [state]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log({
-      dueDate: format(new Date(dueDate), "yyyy-MM-dd HH:mm"),
-      duration,
-      title,
-      description,
-      groups,
-      questions,
-    });
-  };
 
   return (
     <Card className="w-full max-w-3xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
@@ -456,6 +449,11 @@ export default function TeacherCreateActivitiesForm({
         </Button>
         <form action={formAction}>
           <input name="activity_type" value={activityType} type="hidden" />
+          <input
+            name="subject_id"
+            value={teacherGroups.data[0].subject.id}
+            type="hidden"
+          />
           <input name="due_date" value={dueDate} type="hidden" />
           <input name="duration" value={duration} type="hidden" />
           <input name="title" value={title} type="hidden" />

@@ -19,11 +19,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default async function TeacherActivitiesCreate({
   searchParams,
 }: {
-  searchParams: Promise<{ activity_type_id: string; group_id: string }>;
+  searchParams: Promise<{
+    activity_type_id: string;
+    group_id: string;
+    query?: string;
+  }>;
 }) {
-  const { activity_type_id, group_id } = await searchParams;
+  const { activity_type_id, group_id, query } = await searchParams;
   const result = await Promise.all([
-    fetchTeacherGroups(),
+    fetchTeacherGroups(query),
     fetchActivityTypes(),
   ]);
 

@@ -1,11 +1,15 @@
 import { type BreadcrumbItem } from "@/types";
 
-import { SidebarTrigger, SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import {
+  SidebarTrigger,
+  SidebarInset,
+  SidebarProvider,
+} from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Breadcrumbs } from "@/components/v2/breadcrumbs";
-import TeacherSidebar from "@/components/v2/teacher/layout/teacher-sidebar";
+import StudentSidebar from "@/components/v2/student/layout/student-sidebar";
 
-export default function TeacherLayout({
+export default function StudentLayout({
   children,
   breadcrumbs,
 }: {
@@ -14,7 +18,7 @@ export default function TeacherLayout({
 }) {
   return (
     <SidebarProvider>
-      <TeacherSidebar />
+      <StudentSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />

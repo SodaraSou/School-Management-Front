@@ -44,14 +44,12 @@ export default async function TeacherDashboard() {
     throw new Error(result[1].message);
   }
 
-  console.log(result[1]);
-
   return (
     <TeacherLayout breadcrumbs={breadcrumbs}>
       <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between bg-indigo-50 p-6 rounded-lg">
+        <div className="flex items-center justify-between p-6 rounded-lg bg-indigo-50">
           <div>
-            <h1 className="text-4xl font-extrabold text-indigo-600 mb-2">
+            <h1 className="mb-2 text-4xl font-extrabold text-indigo-600">
               Teacher Dashboard
             </h1>
           </div>
@@ -59,61 +57,61 @@ export default async function TeacherDashboard() {
 
         {/* Quick stats */}
         <div className="grid gap-4 md:grid-cols-3">
-          <Card className="border overflow-hidden hover:shadow-md">
+          <Card className="overflow-hidden border hover:shadow-md">
             <div className={`h-2 bg-indigo-500`}></div>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-indigo-800">
                 Total Groups
               </CardTitle>
-              <Users className="h-5 w-5 text-indigo-600" />
+              <Users className="w-5 h-5 text-indigo-600" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-indigo-900">
                 {result[0].data.total_groups}
               </div>
-              <p className="text-xs text-indigo-500 mt-1">
+              <p className="mt-1 text-xs text-indigo-500">
                 Active teaching groups
               </p>
             </CardContent>
           </Card>
-          <Card className="border overflow-hidden hover:shadow-md">
+          <Card className="overflow-hidden border hover:shadow-md">
             <div className={`h-2 bg-indigo-500`}></div>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-indigo-800">
                 Total Students
               </CardTitle>
-              <GraduationCap className="h-5 w-5 text-indigo-600" />
+              <GraduationCap className="w-5 h-5 text-indigo-600" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-indigo-900">
                 {result[0].data.total_students}
               </div>
-              <p className="text-xs text-indigo-500 mt-1">Students enrolled</p>
+              <p className="mt-1 text-xs text-indigo-500">Students enrolled</p>
             </CardContent>
           </Card>
-          <Card className="border overflow-hidden hover:shadow-md">
+          <Card className="overflow-hidden border hover:shadow-md">
             <div className={`h-2 bg-indigo-500`}></div>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-indigo-800">
                 Current Academic Year
               </CardTitle>
-              <CalendarCheck className="h-5 w-5 text-indigo-600" />
+              <CalendarCheck className="w-5 h-5 text-indigo-600" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-indigo-900">
                 {result[0].data.current_semester.name}
               </div>
-              <p className="text-xs text-indigo-500 mt-1">Academic period</p>
+              <p className="mt-1 text-xs text-indigo-500">Academic period</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Teaching groups */}
-        <Card className="shadow-sm hover:shadow-md transition-shadow">
+        <Card className="transition-shadow shadow-sm hover:shadow-md">
           <CardHeader className="flex flex-row items-center justify-between bg-indigo-50 rounded-t-xl">
             <div>
               <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-indigo-600" />
+                <Users className="w-5 h-5 text-indigo-600" />
                 <span className="text-indigo-900">My Teaching Groups</span>
               </CardTitle>
               <CardDescription className="text-indigo-600">
@@ -124,7 +122,7 @@ export default async function TeacherDashboard() {
               <Button
                 variant="outline"
                 size="sm"
-                className="border-indigo-200 hover:bg-indigo-100 text-indigo-700"
+                className="text-indigo-700 border-indigo-200 hover:bg-indigo-100"
               >
                 View All
               </Button>
@@ -135,11 +133,11 @@ export default async function TeacherDashboard() {
               {result[0].data.groups.map((group: any) => (
                 <div
                   key={group.id}
-                  className="flex items-center justify-between p-4 hover:bg-indigo-50 transition-colors"
+                  className="flex items-center justify-between p-4 transition-colors hover:bg-indigo-50"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="bg-indigo-100 p-2 rounded-full">
-                      <BookOpen className="h-5 w-5 text-indigo-600" />
+                    <div className="p-2 bg-indigo-100 rounded-full">
+                      <BookOpen className="w-5 h-5 text-indigo-600" />
                     </div>
                     <div>
                       <h3 className="font-medium text-indigo-900">
@@ -166,10 +164,10 @@ export default async function TeacherDashboard() {
         </Card>
 
         {/* Create Activities */}
-        <Card className="shadow-sm hover:shadow-md transition-shadow">
+        <Card className="transition-shadow shadow-sm hover:shadow-md">
           <CardHeader className="bg-indigo-50 rounded-t-xl">
             <CardTitle className="flex items-center gap-2">
-              <Award className="h-5 w-5 text-indigo-600" />
+              <Award className="w-5 h-5 text-indigo-600" />
               <span className="text-indigo-900">Create Activities</span>
             </CardTitle>
             <CardDescription className="text-indigo-600">
@@ -188,52 +186,17 @@ export default async function TeacherDashboard() {
                 >
                   <Button
                     variant="outline"
-                    className="h-28 w-full flex flex-col gap-2 items-center justify-center border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 group transition-all"
+                    className="flex flex-col items-center justify-center w-full gap-2 transition-all border-indigo-200 h-28 hover:bg-indigo-50 hover:border-indigo-300 group"
                   >
-                    <div className="bg-indigo-100 p-3 rounded-full group-hover:bg-indigo-200 transition-colors">
-                      <FileText className="h-6 w-6 text-indigo-600" />
+                    <div className="p-3 transition-colors bg-indigo-100 rounded-full group-hover:bg-indigo-200">
+                      <FileText className="w-6 h-6 text-indigo-600" />
                     </div>
-                    <span className="text-indigo-600 font-medium">
+                    <span className="font-medium text-indigo-600">
                       {activityType.name}
                     </span>
                   </Button>
                 </Link>
               ))}
-              {/* <Link href="/v2/activities/create?type=assignment">
-                <Button
-                  variant="outline"
-                  className="h-28 w-full flex flex-col gap-2 items-center justify-center border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 group transition-all"
-                >
-                  <div className="bg-indigo-100 p-3 rounded-full group-hover:bg-indigo-200 transition-colors">
-                    <FileText className="h-6 w-6 text-indigo-600" />
-                  </div>
-                  <span className="text-indigo-600 font-medium">
-                    Assignment
-                  </span>
-                </Button>
-              </Link>
-              <Link href="/v2/activities/create?type=midterm">
-                <Button
-                  variant="outline"
-                  className="h-28 w-full flex flex-col gap-2 items-center justify-center border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 group transition-all"
-                >
-                  <div className="bg-indigo-100 p-3 rounded-full group-hover:bg-indigo-200 transition-colors">
-                    <Target className="h-6 w-6 text-indigo-600" />
-                  </div>
-                  <span className="text-indigo-600 font-medium">Mid Term</span>
-                </Button>
-              </Link>
-              <Link href="/v2/activities/create?type=final">
-                <Button
-                  variant="outline"
-                  className="h-28 w-full flex flex-col gap-2 items-center justify-center border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 group transition-all"
-                >
-                  <div className="bg-indigo-100 p-3 rounded-full group-hover:bg-indigo-200 transition-colors">
-                    <TrendingUp className="h-6 w-6 text-indigo-600" />
-                  </div>
-                  <span className="text-indigo-600 font-medium">Final</span>
-                </Button>
-              </Link> */}
             </div>
           </CardContent>
         </Card>

@@ -16,49 +16,51 @@ const signInSchema = z.object({
   }),
 });
 
-export const signIn = async (_prevData: never, formData: FormData) => {
+export const signIn = async (prevData: any, formData: FormData) => {
   const validatedData = signInSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
   });
   if (!validatedData.success) {
     console.log(validatedData.error.flatten().fieldErrors);
-    return { ...validatedData.error.flatten().fieldErrors, success: false };
+    return {
+      success: false,
+      message: "All fields are required!",
+      errors: validatedData.error.flatten().fieldErrors,
+    };
   }
-  let user = null;
   try {
     const res = await fetch(`${API_URL}/api/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(validatedData.data),
     });
+    const data = await res.json();
     if (!res.ok) {
-      const errorData = await res.json();
-      console.log(errorData);
+      console.error(res);
       return {
-        message: errorData.message,
         success: false,
-        status: res.status,
+        message: `Error ${res.status}: ${data.message}`,
       };
     }
-    user = await res.json();
-    const expirationDate = new Date(Date.now() + user.data.expires);
-    (await cookies()).set("session", user.data.token, {
+    const expirationDate = new Date(Date.now() + data.data.expires);
+    (await cookies()).set("session", data.data.token, {
       expires: expirationDate,
       httpOnly: true,
       secure: true,
       sameSite: "strict",
     });
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    console.error(error);
     return {
-      message: "An error occurred",
       success: false,
+      message: `Error: ${error.message}`,
     };
   }
-  redirect("/dashboard");
+  redirect("/v2/dashboard");
 };
 
 const signUpSchema = z.object({

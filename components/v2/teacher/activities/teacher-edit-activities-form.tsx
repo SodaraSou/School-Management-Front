@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useActionState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import { format, parse } from "date-fns";
+import { updateActivity } from "@/app/v2/(dashboard)/@teacher/activities/actions";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,7 +22,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import TeacherAssignActivitiesDialog from "@/components/v2/teacher/activities/teacher-assign-activities-dialog";
-import { updateActivity } from "@/app/v2/(dashboard)/@teacher/activities/actions";
 
 interface Option {
   name: string;
@@ -37,17 +38,6 @@ interface Question {
   points: number;
   options?: Option[];
 }
-
-// interface Activity {
-//   id: string;
-//   activity_type: string;
-//   title: string;
-//   description: string;
-//   due_date: string;
-//   duration: string;
-//   groups: number[];
-//   questions: Question[];
-// }
 
 export default function TeacherEditActivitiesForm({
   activity,
@@ -67,6 +57,7 @@ export default function TeacherEditActivitiesForm({
     "yyyy-MM-dd HH:mm:ss",
     new Date()
   );
+
   const formattedDate = format(parsedDate, "yyyy-MM-dd HH:mm");
   const [activityType, setActivityType] = useState(
     activity.data.activity_type.id
@@ -74,12 +65,14 @@ export default function TeacherEditActivitiesForm({
   const [title, setTitle] = useState(activity.data.title);
   const [description, setDescription] = useState(activity.data.description);
   const [dueDate, setDueDate] = useState(formattedDate);
+
   const [duration, setDuration] = useState(activity.data.duration);
   const [questions, setQuestions] = useState<Question[]>(
     activity.data.questions.length
       ? activity.data.questions
       : [
           {
+            id: null,
             name: "",
             type: "text",
             is_require: false,
@@ -90,7 +83,9 @@ export default function TeacherEditActivitiesForm({
         ]
   );
 
-  const [groups, setGroups] = useState(activity.data.groups);
+  const [groups, setGroups] = useState(
+    activity.data.groups.map((group: any) => group.id)
+  );
 
   const handleAssignGroupsToActivity = (selectedGroups: any[]) => {
     setGroups([...selectedGroups]);
@@ -108,7 +103,9 @@ export default function TeacherEditActivitiesForm({
         if (i !== qIndex) return q;
         if (value === "single_choice") {
           const newOptions = (
-            q.options?.length ? q.options : [{ name: "", is_correct: false }]
+            q.options?.length
+              ? q.options
+              : [{ id: null, name: "", is_correct: false }]
           ).map((opt, idx) => ({
             ...opt,
             is_correct: idx === 0,
@@ -125,11 +122,11 @@ export default function TeacherEditActivitiesForm({
             type: value,
             options: q.options?.length
               ? q.options
-              : [{ name: "", is_correct: false }],
+              : [{ id: null, name: "", is_correct: false }],
             correct_answer: "",
           };
         } else {
-          return { ...q, type: value, options: undefined, correct_answer: "" };
+          return { ...q, type: value, options: [], correct_answer: "" };
         }
       })
     );
@@ -242,12 +239,13 @@ export default function TeacherEditActivitiesForm({
     setQuestions((prev) => [
       ...prev,
       {
+        id: null,
         name: "",
         type: "text",
         is_require: false,
         correct_answer: "",
         points: 0,
-        options: undefined,
+        options: [],
       },
     ]);
   };
@@ -262,24 +260,16 @@ export default function TeacherEditActivitiesForm({
     initialState
   );
 
+  const { toast } = useToast();
   useEffect(() => {
     if (state.success === false) {
-      alert(state.message);
+      toast({
+        title: "Error",
+        description: state.message,
+        variant: "destructive",
+      });
     }
   }, [state]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log({
-      activity_id: activity.id,
-      dueDate: format(new Date(dueDate), "yyyy-MM-dd HH:mm"),
-      duration,
-      title,
-      description,
-      groups,
-      questions,
-    });
-  };
 
   return (
     <Card className="w-full max-w-3xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
@@ -291,13 +281,13 @@ export default function TeacherEditActivitiesForm({
       <CardContent className="p-6 flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <div>
-            <Input
+            <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Activity Title"
               className="w-full text-2xl font-bold border-none focus:outline-none mb-4"
             />
-            <Input
+            <input
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Activity Description"
