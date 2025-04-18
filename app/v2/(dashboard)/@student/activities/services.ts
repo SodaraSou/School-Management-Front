@@ -30,3 +30,10 @@ export const fetchStudentsActivities = async () => {
     return { success: false, message: `Error: ${error.message}` };
   }
 };
+
+export const fetchStudentsActivityById = async (activityId: string) => {
+  const token = (await cookies()).get("session")?.value;
+  if (!token) {
+    throw new Error("Unauthorized: No token found.");
+  }
+};

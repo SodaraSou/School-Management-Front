@@ -2,7 +2,7 @@ import Link from "next/link";
 import { fetchTeacherGroups } from "@/app/v2/(dashboard)/@teacher/groups/services";
 import { type BreadcrumbItem } from "@/types";
 
-import { Search, Users, BookOpen, Calendar } from "lucide-react";
+import { Search, Users, BookOpen, Calendar, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -43,18 +43,18 @@ export default async function StudentGroups() {
   return (
     <StudentLayout breadcrumbs={breadcrumbs}>
       <div className="flex flex-col gap-6">
-        <Card className="overflow-hidden">
-          <CardHeader className="bg-indigo-100">
-            <CardTitle className="text-4xl font-extrabold text-indigo-600">
+        <Card className="bg-indigo-600">
+          <CardHeader>
+            <CardTitle className="text-4xl font-bold text-center text-white">
               My Groups
             </CardTitle>
           </CardHeader>
         </Card>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {result.data.map((group: any) => (
-            <Card key={group.id} className="overflow-hidden">
-              <CardHeader className={`border-b bg-indigo-50`}>
-                <CardTitle className="text-2xl font-bold text-indigo-700">
+            <Card key={group.id}>
+              <CardHeader>
+                <CardTitle className="text-2xl font-semibold text-indigo-900">
                   {group.name}
                 </CardTitle>
                 {/* <div className="flex items-center gap-2">
@@ -73,50 +73,34 @@ export default async function StudentGroups() {
                   </div>
                 </div> */}
               </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4 p-6">
-                <div className="flex flex-col items-center justify-center">
-                  <Users className="w-5 h-5 mb-1 text-gray-700" />
-                  <span className="text-sm text-gray-600">Students</span>
-                  <span className="font-semibold text-gray-800">
-                    {/* {group.total_students} */}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center">
-                  <Calendar className="w-5 h-5 mb-1 text-gray-700" />
-                  <span className="text-sm text-gray-600">Year</span>
-                  <span className="font-semibold text-gray-800">
-                    {group.year.name}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center">
-                  <Users className="w-5 h-5 mb-1 text-gray-700" />
-                  <span className="text-sm text-gray-600">Semester</span>
-                  <span className="font-semibold text-gray-800">
-                    {group.semester.name}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center">
-                  <Calendar className="w-5 h-5 mb-1 text-gray-700" />
-                  <span className="text-sm text-gray-600">School Year</span>
-                  <span className="font-semibold text-gray-800">
-                    {group.academic_year.name}
-                  </span>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="w-5 h-5 text-indigo-600" />
+                    <span className="font-medium text-gray-800">Year:</span>
+                    <span>{group.year.name}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <BookOpen className="w-5 h-5 text-indigo-600" />
+                    <span className="font-medium text-gray-800">
+                      Academic Year:
+                    </span>
+                    <span>{group.academic_year.name}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <GraduationCap className="w-5 h-5 text-indigo-600" />
+                    <span className="font-medium text-gray-800">Semester:</span>
+                    <span>{group.semester.name}</span>
+                  </div>
                 </div>
               </CardContent>
               <CardFooter>
-                <Button
-                  variant="outline"
-                  className="w-full border-indigo-200 hover:bg-indigo-50 hovernderline"
-                  asChild
+                <Link
+                  href={`/v2/groups/${group.id}`}
+                  className="inline-block text-indigo-600 font-semibold hover:text-indigo-800 text-sm underline transition-colors"
                 >
-                  <Link href={`/v2/groups/${group.id}`}>View Details</Link>
-                </Button>
-                {/* <Button
-                  className="w-full ml-auto text-white bg-indigo-600 hover:bg-indigo-700"
-                  asChild
-                >
-                  <Link href={`/v2/groups/${group.id}`}>View Details</Link>
-                </Button> */}
+                  View Details →
+                </Link>
               </CardFooter>
             </Card>
           ))}
