@@ -19,6 +19,7 @@ export const createActivity = async (prevState: any, formData: FormData) => {
     ? format(new Date(dueDateString), "yyyy-MM-dd HH:mm")
     : null;
   const duration = formData.get("duration");
+  const weight = formData.get("weight");
   const title = formData.get("title");
   const description = formData.get("description");
   const questionsString = formData.get("questions") as string;
@@ -41,6 +42,7 @@ export const createActivity = async (prevState: any, formData: FormData) => {
         duration,
         title,
         description,
+        weight,
         group_ids: groups,
         questions: questions,
       }),
@@ -74,6 +76,7 @@ export const updateActivity = async (prevState: any, formData: FormData) => {
   const dueDate = dueDateString
     ? format(new Date(dueDateString), "yyyy-MM-dd HH:mm")
     : null;
+  const weight = formData.get("weight");
   const duration = formData.get("duration");
   const title = formData.get("title");
   const description = formData.get("description");
@@ -98,6 +101,7 @@ export const updateActivity = async (prevState: any, formData: FormData) => {
           due_at: dueDate,
           title,
           description,
+          weight,
           group_ids: groups,
           questions: questions,
         }),
@@ -120,4 +124,52 @@ export const updateActivity = async (prevState: any, formData: FormData) => {
   }
 
   redirect("/v2/activities");
+};
+
+export const subjectPromotion = async (prevState: any, formData: FormData) => {
+  const token = (await cookies()).get("session")?.value;
+  if (!token) {
+    throw new Error("Unauthorized: No token found.");
+  }
+
+  const score_pass = formData.get("score_pass");
+  const group_id = formData.get("group_id");
+  const subject_id = formData.get("subject_id");
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/v2/teacher/promotion`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        subject_id,
+        group_id,
+        score_pass,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      console.log(data);
+      return {
+        isSuccess: false,
+        isError: true,
+        message: `Error ${res.status}: ${data.message}`,
+      };
+    }
+    return {
+      isSuccess: true,
+      isError: false,
+      message: "Successful promotion!",
+    };
+  } catch (error: any) {
+    console.log(error);
+    return {
+      isSuccess: false,
+      isError: true,
+      message: `Error: ${error.message}`,
+    };
+  }
 };

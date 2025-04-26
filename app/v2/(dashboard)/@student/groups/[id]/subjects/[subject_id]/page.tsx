@@ -123,11 +123,11 @@ export default async function StudentGroupsSubject({
                     <Card key={activity.id}>
                       <CardHeader className="flex flex-row items-center justify-between">
                         <div>
-                          <h4 className="font-medium text-indigo-700">
+                          <h4 className="font-medium text-indigo-600">
                             {activity.forms.title}
                           </h4>
-                          {/* <p className="text-sm text-gray-500">
-                            Type: {activity.activity_type.name}
+                          <p className="text-sm text-gray-500">
+                            Type: {activity.activityType.name}
                           </p>
                           <p className="text-sm text-gray-500">
                             Due:{" "}
@@ -135,7 +135,7 @@ export default async function StudentGroupsSubject({
                               new Date(activity.due_at),
                               "yyyy-MM-dd HH:mm"
                             )}
-                          </p> */}
+                          </p>
                         </div>
                         <div>
                           <Button
@@ -143,8 +143,8 @@ export default async function StudentGroupsSubject({
                             asChild
                           >
                             <Link href={`/v2/activities/${activity.id}`}>
-                              <Eye className="w-4 h-4 mr-1" />
-                              View Assignment
+                              <Eye />
+                              View Activity
                             </Link>
                           </Button>
                         </div>

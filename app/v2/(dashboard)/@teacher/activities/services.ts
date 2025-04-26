@@ -83,7 +83,7 @@ export const fetchTeacherActivityDashboardById = async (id: string) => {
     );
     const data = await res.json();
     if (!res.ok) {
-      console.error(res);
+      console.error(data);
       return {
         success: false,
         message: `Error ${res.status}: ${data.message}`,

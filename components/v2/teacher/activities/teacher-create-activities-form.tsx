@@ -51,6 +51,7 @@ export default function TeacherCreateActivitiesForm({
 }) {
   const [activityType, setActivityType] = useState(activityTypeId);
   const [title, setTitle] = useState("");
+  const [weight, setWeight] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [duration, setDuration] = useState("");
@@ -296,6 +297,7 @@ export default function TeacherCreateActivitiesForm({
             </Select>
           </div>
         )}
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block mb-1 font-medium">Due Date:</label>
@@ -315,6 +317,17 @@ export default function TeacherCreateActivitiesForm({
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
               placeholder="e.g., 60"
+              className="w-full"
+              min="1"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Weight:</label>
+            <Input
+              type="number"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              placeholder=""
               className="w-full"
               min="1"
             />
@@ -455,6 +468,7 @@ export default function TeacherCreateActivitiesForm({
             type="hidden"
           />
           <input name="due_date" value={dueDate} type="hidden" />
+          <input name="weight" value={weight} type="hidden" />
           <input name="duration" value={duration} type="hidden" />
           <input name="title" value={title} type="hidden" />
           <input name="description" value={description} type="hidden" />

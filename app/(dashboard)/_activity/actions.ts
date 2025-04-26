@@ -109,10 +109,10 @@ export const submitActivity = async (prevData: any, formData: FormData) => {
     });
     const data = await res.json();
     if (!res.ok) {
-  return {
-    success: false,
-    message: `Error ${res.status}: ${data.message}`,
-  };
+      return {
+        success: false,
+        message: `Error ${res.status}: ${data.message}`,
+      };
     }
   } catch (error: any) {
     console.log(error);
@@ -122,5 +122,5 @@ export const submitActivity = async (prevData: any, formData: FormData) => {
     };
   }
 
-  redirect(`/activity`);
+  redirect(`/v2/activities/${activityId}`);
 };

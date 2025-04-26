@@ -39,3 +39,5 @@ export const fetchTeacherDashboardData = async () => {
     };
   }
 };
+
+export const classPromotion = async (prevState: any, formData: FormData) => {};

@@ -1,9 +1,19 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { type BreadcrumbItem } from "@/types";
-import { fetchTeacherGroupById } from "@/app/v2/(dashboard)/@teacher/groups/services";
+import {
+  fetchGroupSubjectStudentResult,
+  fetchTeacherGroupById,
+} from "@/app/v2/(dashboard)/@teacher/groups/services";
 
-import { FileText, MessageCircle, Users, PlusCircle, Eye } from "lucide-react";
+import {
+  FileText,
+  MessageCircle,
+  Users,
+  PlusCircle,
+  Eye,
+  GraduationCap,
+} from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
@@ -16,6 +26,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import TeacherLayout from "@/components/v2/teacher/layout/teacher-layout";
 import PostTab from "@/components/v2/teacher/groups/post-tab";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import SubjectPromotionDialog from "@/components/v2/teacher/groups/subject-promotion-dialog";
 
 export default async function TeacherGroupById({
   params,
@@ -43,6 +62,7 @@ export default async function TeacherGroupById({
   const students = 32;
 
   const result = await fetchTeacherGroupById(id, subject_id);
+  const test = await fetchGroupSubjectStudentResult(id, subject_id);
 
   return (
     <TeacherLayout breadcrumbs={breadcrumbs}>
@@ -79,6 +99,13 @@ export default async function TeacherGroupById({
             >
               <Users className="w-4 h-4 mr-2" />
               People
+            </TabsTrigger>
+            <TabsTrigger
+              value="result"
+              className="data-[state=active]:text-indigo-700 data-[state=active]:border-b-2 data-[state=active]:border-indigo-700"
+            >
+              <GraduationCap className="w-4 h-4 mr-2" />
+              Result
             </TabsTrigger>
           </TabsList>
           <TabsContent value="stream">
@@ -190,7 +217,7 @@ export default async function TeacherGroupById({
               </CardHeader>
               <CardContent className="p-6">
                 {result.data.students.map((student: any, index: number) => (
-                  <Card>
+                  <Card key={index}>
                     <CardHeader className="flex flex-row gap-6">
                       <Avatar>
                         <AvatarImage src={student.image_url} />
@@ -202,6 +229,90 @@ export default async function TeacherGroupById({
                     </CardHeader>
                   </Card>
                 ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="result">
+            <Card className="overflow-hidden">
+              <CardHeader className="flex flex-row items-center justify-between bg-indigo-100">
+                <CardTitle className="text-2xl font-bold text-indigo-600">
+                  Results Ranking
+                </CardTitle>
+                <SubjectPromotionDialog group_id={id} subject_id={subject_id} />
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="overflow-x-auto">
+                  {(() => {
+                    const rankingData = test.data
+                      .map((student: any) => ({
+                        ...student,
+                        totalScore: (student.activities || []).reduce(
+                          (acc: number, act: any) => acc + act.scores,
+                          0
+                        ),
+                      }))
+                      .sort((a: any, b: any) => b.totalScore - a.totalScore);
+                    return (
+                      <Table className="min-w-full">
+                        <TableHeader>
+                          <TableRow className="bg-indigo-50">
+                            <TableHead className="px-4 py-2 text-left text-sm font-bold text-indigo-700">
+                              Rank
+                            </TableHead>
+                            <TableHead className="px-4 py-2 text-left text-sm font-bold text-indigo-700">
+                              Student
+                            </TableHead>
+                            {test.data[0].activities.map((activity: any) => (
+                              <TableHead
+                                className="px-4 py-2 text-left text-sm font-bold text-indigo-700"
+                                key={activity.id}
+                              >
+                                {activity.name}
+                              </TableHead>
+                            ))}
+                            <TableHead className="px-4 py-2 text-left text-sm font-bold text-indigo-700">
+                              Total Score
+                            </TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {rankingData.map((student: any, index: number) => (
+                            <TableRow
+                              key={student.id}
+                              className="border-t border-gray-200"
+                            >
+                              <TableCell className="px-4 py-2 text-sm text-gray-800">
+                                {index + 1}
+                              </TableCell>
+                              <TableCell className="px-4 py-2 text-sm text-gray-800">
+                                <div className="flex items-center gap-3">
+                                  <Avatar>
+                                    <AvatarImage src={student.image_url} />
+                                    <AvatarFallback>
+                                      {student.name.slice(0, 2).toUpperCase()}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  {student.name}
+                                </div>
+                              </TableCell>
+                              {student.activities.map((activty: any) => (
+                                <TableCell
+                                  className="px-4 py-2 text-sm text-gray-800"
+                                  key={activty.id}
+                                >
+                                  {activty.scores}
+                                </TableCell>
+                              ))}
+                              <TableCell className="px-4 py-2 text-sm text-gray-800">
+                                {student.totalScore}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    );
+                  })()}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

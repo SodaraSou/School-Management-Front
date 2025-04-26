@@ -14,6 +14,7 @@ import {
   Bell,
   ChevronsUpDown,
   LogOut,
+  GraduationCap,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -54,6 +55,11 @@ const items = [
     title: "Activities",
     url: "/v2/activities",
     icon: Calendar,
+  },
+  {
+    title: "Result",
+    url: "/v2/grade",
+    icon: GraduationCap,
   },
 ];
 

@@ -51,6 +51,7 @@ export default function TeacherEditActivitiesForm({
   if (activity.success === false) {
     throw new Error(activity.message);
   }
+  console.log(activity);
 
   const parsedDate = parse(
     activity.data.due_at,
@@ -65,7 +66,7 @@ export default function TeacherEditActivitiesForm({
   const [title, setTitle] = useState(activity.data.title);
   const [description, setDescription] = useState(activity.data.description);
   const [dueDate, setDueDate] = useState(formattedDate);
-
+  const [weight, setWeight] = useState(activity.data.weight);
   const [duration, setDuration] = useState(activity.data.duration);
   const [questions, setQuestions] = useState<Question[]>(
     activity.data.questions.length
@@ -340,6 +341,17 @@ export default function TeacherEditActivitiesForm({
               className="w-full"
             />
           </div>
+          <div>
+            <label className="block mb-1 font-medium">Weight:</label>
+            <Input
+              type="number"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              placeholder=""
+              className="w-full"
+              min="1"
+            />
+          </div>
         </div>
         {questions.map((question, qIndex) => (
           <div
@@ -473,6 +485,7 @@ export default function TeacherEditActivitiesForm({
           <input name="activity_type" value={activityType} type="hidden" />
           <input name="due_date" value={dueDate} type="hidden" />
           <input name="duration" value={duration} type="hidden" />
+          <input name="weight" value={weight} type="hidden" />
           <input name="title" value={title} type="hidden" />
           <input name="description" value={description} type="hidden" />
           <input name="groups" value={JSON.stringify(groups)} type="hidden" />
