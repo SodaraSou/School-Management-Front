@@ -4,6 +4,7 @@ import { fetchStudentGroupById } from "@/app/v2/(dashboard)/@student/groups/serv
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -44,19 +45,19 @@ export default async function StudentGroupById({
 
   const subjects = result.data as Subject[];
 
-  console.log(result);
-
   return (
     <StudentLayout breadcrumbs={breadcrumbs}>
       <>
-        <header className="bg-indigo-600 py-10 shadow rounded-xl">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-4xl font-bold text-white">Group {id}</h1>
-            <p className="mt-2 text-lg text-indigo-100">
+        <Card className="bg-indigo-600">
+          <CardHeader>
+            <CardTitle className="text-4xl font-bold text-center text-white">
+              Group {id}
+            </CardTitle>
+            <CardDescription className="mt-2 text-lg text-indigo-100 text-center">
               Your subjects overview
-            </p>
-          </div>
-        </header>
+            </CardDescription>
+          </CardHeader>
+        </Card>
         <main>
           {subjects.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 bg-white rounded-xl shadow">
@@ -70,10 +71,7 @@ export default async function StudentGroupById({
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
               {subjects.map((subject) => (
-                <Card
-                  key={subject.id}
-                  className="border rounded-xl shadow-lg transform hover:-translate-y-1 transition duration-300 bg-white"
-                >
+                <Card key={subject.id}>
                   <CardHeader>
                     <CardTitle className="text-2xl font-semibold text-indigo-900">
                       {subject.name}

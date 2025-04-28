@@ -274,8 +274,8 @@ export default function TeacherEditActivitiesForm({
 
   return (
     <Card className="w-full max-w-3xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-      <CardHeader className="bg-indigo-100">
-        <CardTitle className="text-3xl font-bold text-indigo-600">
+      <CardHeader className="bg-indigo-600">
+        <CardTitle className="text-3xl font-bold text-white">
           Edit Activity
         </CardTitle>
       </CardHeader>

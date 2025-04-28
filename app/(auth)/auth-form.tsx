@@ -72,7 +72,7 @@ export default function AuthForm({
                 {mode === "sign-in" && (
                   <Link
                     href="/forgot-password"
-                    className="ml-auto inline-block text-sm underline hover:text-blue-500"
+                    className="ml-auto inline-block text-sm underline hover:text-indigo-600"
                   >
                     Forgot your password?
                   </Link>
@@ -92,8 +92,7 @@ export default function AuthForm({
             )}
             <Button
               type="submit"
-              className="w-full bg-blue-500 text-white"
-              variant={"outline"}
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
               disabled={isPending}
             >
               {mode === "sign-in" ? "Sign In" : "Sign Up"}
@@ -102,14 +101,14 @@ export default function AuthForm({
           {mode === "sign-in" ? (
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
-              <Link href="/sign-up" className="underline hover:text-blue-500">
+              <Link href="/sign-up" className="underline hover:text-indigo-600">
                 Sign Up
               </Link>
             </div>
           ) : (
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
-              <Link href="/sign-in" className="underline hover:text-blue-500">
+              <Link href="/sign-in" className="underline hover:text-indigo-600">
                 Sign In
               </Link>
             </div>

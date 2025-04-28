@@ -57,24 +57,17 @@ export default async function TeacherGroupById({
     },
   ];
 
-  const groupName = "Mathematics 101";
-  const groupCode = "MAT101";
-  const students = 32;
-
   const result = await fetchTeacherGroupById(id, subject_id);
   const test = await fetchGroupSubjectStudentResult(id, subject_id);
 
   return (
     <TeacherLayout breadcrumbs={breadcrumbs}>
       <div className="flex flex-col gap-6">
-        <Card className="bg-indigo-100">
+        <Card className="bg-indigo-600">
           <CardHeader>
-            <CardTitle className="mb-2 text-4xl font-extrabold text-indigo-700">
+            <CardTitle className="text-4xl font-extrabold text-white">
               {result.data.name}
             </CardTitle>
-            <CardDescription>
-              Code: {groupCode} • {result.data.total_students} Students
-            </CardDescription>
           </CardHeader>
         </Card>
         <Tabs defaultValue="stream" className="w-full">
@@ -110,15 +103,11 @@ export default async function TeacherGroupById({
           </TabsList>
           <TabsContent value="stream">
             <Card className="overflow-hidden">
-              <CardHeader className="flex flex-row items-center justify-between bg-indigo-100">
+              <CardHeader className="flex flex-row items-center justify-between bg-indigo-600">
                 <div>
-                  <CardTitle className="text-2xl font-bold text-indigo-600">
-                    Welcome to {groupName}!
+                  <CardTitle className="text-2xl font-bold text-white">
+                    Annoucements
                   </CardTitle>
-                  <CardDescription>
-                    Use this space to make announcements, post assignments, and
-                    engage with your students.
-                  </CardDescription>
                 </div>
               </CardHeader>
               <CardContent className="p-6">
@@ -153,11 +142,15 @@ export default async function TeacherGroupById({
           </TabsContent>
           <TabsContent value="assignments">
             <Card className="overflow-hidden">
-              <CardHeader className="flex flex-row items-center justify-between bg-indigo-100">
-                <CardTitle className="text-2xl font-bold text-indigo-600">
+              <CardHeader className="flex flex-row items-center justify-between bg-indigo-600">
+                <CardTitle className="text-2xl font-bold text-white">
                   Assignments
                 </CardTitle>
-                <Button className="bg-indigo-600 hover:bg-indigo-700" asChild>
+                <Button
+                  variant={"outline"}
+                  className="text-indigo-600 hover:text-indigo-700"
+                  asChild
+                >
                   <Link
                     href={{
                       pathname: "/v2/activities/create",
@@ -210,8 +203,8 @@ export default async function TeacherGroupById({
           </TabsContent>
           <TabsContent value="people">
             <Card className="overflow-hidden">
-              <CardHeader className="flex flex-row items-center justify-between bg-indigo-100">
-                <CardTitle className="text-2xl font-bold text-indigo-600">
+              <CardHeader className="flex flex-row items-center justify-between bg-indigo-600">
+                <CardTitle className="text-2xl font-bold text-white">
                   Students
                 </CardTitle>
               </CardHeader>
@@ -234,8 +227,8 @@ export default async function TeacherGroupById({
           </TabsContent>
           <TabsContent value="result">
             <Card className="overflow-hidden">
-              <CardHeader className="flex flex-row items-center justify-between bg-indigo-100">
-                <CardTitle className="text-2xl font-bold text-indigo-600">
+              <CardHeader className="flex flex-row items-center justify-between bg-indigo-600">
+                <CardTitle className="text-2xl font-bold text-white">
                   Results Ranking
                 </CardTitle>
                 <SubjectPromotionDialog group_id={id} subject_id={subject_id} />
@@ -255,7 +248,7 @@ export default async function TeacherGroupById({
                     return (
                       <Table className="min-w-full">
                         <TableHeader>
-                          <TableRow className="bg-indigo-50">
+                          <TableRow>
                             <TableHead className="px-4 py-2 text-left text-sm font-bold text-indigo-700">
                               Rank
                             </TableHead>

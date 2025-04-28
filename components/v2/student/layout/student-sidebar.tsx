@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { use } from "react";
 import { useUser } from "@/contexts/user-context";
@@ -38,6 +39,7 @@ import {
   SidebarGroupLabel,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { signOut } from "@/lib/auth";
 
 const items = [
   {
@@ -74,11 +76,14 @@ export default function StudentSidebar() {
               asChild
             >
               <Link href="/v2/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-indigo-600 text-sidebar-primary-foreground">
-                  <Command className="size-4" />
-                </div>
+                <Image
+                  src={"/school-logo.png"}
+                  height={32}
+                  width={32}
+                  alt="logo"
+                />
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">PPTU</span>
+                  <span className="truncate font-semibold">PPTC</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -175,7 +180,7 @@ export default function StudentSidebar() {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={signOut}>
                   <LogOut />
                   Log out
                 </DropdownMenuItem>

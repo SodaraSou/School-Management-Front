@@ -26,57 +26,73 @@ export default async function StudentActivitiesShowPage({
 
   return (
     <StudentLayout>
-      <Card className="bg-indigo-600 text-white">
+      <Card className="border-l-4 border-l-indigo-500">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-4xl font-extrabold text-indigo-600">
+              {result.data.form.title}
+            </h1>
+          </div>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="flex items-center gap-2">
+              <div className="bg-indigo-100 p-2 rounded-full">
+                <Calendar className="h-4 w-4 text-indigo-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Due Date</p>
+                <p className="font-medium">
+                  {format(new Date(result.data.due_at), "yyyy-MM-dd HH:mm")}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="bg-indigo-100 p-2 rounded-full">
+                <Clock className="h-4 w-4 text-indigo-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Duration</p>
+                <p className="font-medium">{result.data.duration} min</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="bg-indigo-100 p-2 rounded-full">
+                <GraduationCap className="h-4 w-4 text-indigo-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Points</p>
+                <p className="font-medium">{result.data.full_score}</p>
+              </div>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
+      <Card className="overflow-hidden">
+        <CardHeader className="flex flex-row justify-between items-center bg-indigo-600">
+          <CardTitle className="text-2xl font-semibold text-white">
             {result.data.form.title}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex items-center space-x-2">
-              <Calendar />
-              <span className="font-medium">Due At:</span>
-              <span>
-                {format(new Date(result.data.due_at), "dd-MM-yyyy HH:mm a")}
-              </span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Clock />
-              <span className="font-medium">Duration: </span>
-              <span>{result.data.duration} min</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <GraduationCap />
-              <span className="font-medium">Points: </span>
-              <span>{result.data.full_score}</span>
-            </div>
+        <CardContent className="mt-6">
+          <div className="flex justify-between items-center">
+            <p>{result.data.form.description}</p>
+            {result.data.is_submitted ? (
+              <Button
+                className="bg-gray-400 text-white cursor-not-allowed"
+                disabled
+              >
+                Already Submitted
+              </Button>
+            ) : (
+              <Button
+                className="text-white px-4 py-2 rounded-lg"
+                asChild
+                disabled={result.data.is_submitted}
+              >
+                <Link href={`/v2/activities/${id}/form`}>Go to Form Page</Link>
+              </Button>
+            )}
           </div>
         </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex flex-row justify-between items-center">
-          <div>
-            <CardTitle>{result.data.form.title}</CardTitle>
-            <CardDescription>{result.data.form.description}</CardDescription>
-          </div>
-          {result.data.is_submitted ? (
-            <Button
-              className="bg-indigo-600 hover:bg-indigo-700 text-white"
-              disabled
-            >
-              Already Submitted
-            </Button>
-          ) : (
-            <Button
-              className="bg-indigo-600 hover:bg-indigo-700 text-white"
-              asChild
-              disabled={result.data.is_submitted}
-            >
-              <Link href={`/v2/activities/${id}/form`}>Go to Form Page</Link>
-            </Button>
-          )}
-        </CardHeader>
       </Card>
     </StudentLayout>
   );

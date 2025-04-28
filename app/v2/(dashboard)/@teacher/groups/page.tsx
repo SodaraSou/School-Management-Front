@@ -40,17 +40,14 @@ export default async function TeacherGroups() {
   return (
     <TeacherLayout breadcrumbs={breadcrumbs}>
       <div className="flex flex-col gap-6">
-        <header className="flex items-center justify-between p-6 bg-indigo-100 rounded-lg">
-          <div>
-            <h1 className="mb-2 text-4xl font-extrabold text-indigo-600">
+        <Card className="bg-indigo-600">
+          <CardHeader>
+            <CardTitle className="text-4xl font-extrabold text-white">
               My Groups
-            </h1>
-            <p className="text-lg text-gray-600">
-              Quickly manage and view your group details.
-            </p>
-          </div>
-        </header>
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+            </CardTitle>
+          </CardHeader>
+        </Card>
+        {/* <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
           <div className="relative w-full md:w-72">
             <Search className="absolute w-4 h-4 transform -translate-y-1/2 left-3 top-1/2 text-muted-foreground" />
             <Input placeholder="Search groups..." className="pl-10" />
@@ -58,14 +55,7 @@ export default async function TeacherGroups() {
           <div className="flex flex-wrap w-full gap-2 md:w-auto">
             <div className="flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-indigo-600" />
-              {/* <select className="px-3 py-1 text-sm bg-white border rounded-md">
-                <option value="">All Subjects</option>
-                <option value="Mathematics">Mathematics</option>
-                <option value="Physics">Physics</option>
-                <option value="Chemistry">Chemistry</option>
-                <option value="Biology">Biology</option>
-                <option value="Computer Science">Computer Science</option>
-              </select> */}
+
               <Select>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Filter Group" />
@@ -84,12 +74,6 @@ export default async function TeacherGroups() {
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-indigo-600" />
-              {/* <select className="px-3 py-1 text-sm bg-white border rounded-md">
-                <option value="">All Years</option>
-                <option value="Year 1">Year 1</option>
-                <option value="Year 2">Year 2</option>
-                <option value="Year 3">Year 3</option>
-              </select> */}
               <Select>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Filter Year" />
@@ -106,81 +90,68 @@ export default async function TeacherGroups() {
               </Select>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {result.data.map((group: any) => (
-            <Card key={group.id} className="overflow-hidden">
-              <CardHeader className={`border-b bg-indigo-50`}>
-                <CardTitle className="text-2xl font-bold text-indigo-700">
-                  {group.name}
-                </CardTitle>
-                {/* <div className="flex items-center gap-2">
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center bg-white`}
-                  >
-                    {group.name.charAt(0)}
+            <Card
+              key={group.id}
+              className="border-l-4 border-l-indigo-500 overflow-hidden"
+            >
+              <CardHeader>
+                <div className="mb-6">
+                  <h1 className="text-2xl font-extrabold text-indigo-600">
+                    {group.name}
+                  </h1>
+                </div>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-indigo-100 p-2 rounded-full">
+                      <Users className="h-4 w-4 text-indigo-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Students</p>
+                      <p className="font-medium">{group.total_students}</p>
+                    </div>
                   </div>
-                  <div>
-                    <CardTitle className="text-lg font-bold">
-                      {group.name}
-                    </CardTitle>
-                    <CardDescription className="text-sm font-medium text-gray-700">
-                      {group.subject}
-                    </CardDescription>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-indigo-100 p-2 rounded-full">
+                      <Calendar className="h-4 w-4 text-indigo-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Year</p>
+                      <p className="font-medium">{group.year.name}</p>
+                    </div>
                   </div>
-                </div> */}
+                  <div className="flex items-center gap-2">
+                    <div className="bg-indigo-100 p-2 rounded-full">
+                      <Users className="h-4 w-4 text-indigo-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Semester</p>
+                      <p className="font-medium">{group.semester.name}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-indigo-100 p-2 rounded-full">
+                      <Calendar className="h-4 w-4 text-indigo-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">School Year</p>
+                      <p className="font-medium">{group.academic_year.name}</p>
+                    </div>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4 p-6">
-                <div className="flex flex-col items-center justify-center">
-                  <Users className="w-5 h-5 mb-1 text-gray-700" />
-                  <span className="text-sm text-gray-600">Students</span>
-                  <span className="font-semibold text-gray-800">
-                    {/* {group.total_students} */}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center">
-                  <Calendar className="w-5 h-5 mb-1 text-gray-700" />
-                  <span className="text-sm text-gray-600">Year</span>
-                  <span className="font-semibold text-gray-800">
-                    {group.year.name}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center">
-                  <Users className="w-5 h-5 mb-1 text-gray-700" />
-                  <span className="text-sm text-gray-600">Semester</span>
-                  <span className="font-semibold text-gray-800">
-                    {group.semester.name}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center">
-                  <Calendar className="w-5 h-5 mb-1 text-gray-700" />
-                  <span className="text-sm text-gray-600">School Year</span>
-                  <span className="font-semibold text-gray-800">
-                    {group.academic_year.name}
-                  </span>
-                </div>
-              </CardContent>
               <CardFooter>
-                <Button
-                  variant="outline"
-                  className="w-full border-indigo-200 hover:bg-indigo-50 hovernderline"
-                  asChild
+                <Link
+                  href={{
+                    pathname: `/v2/groups/${group.id}`,
+                    query: { subject_id: group.subject.id },
+                  }}
+                  className="inline-block text-indigo-600 font-semibold hover:text-indigo-800 text-sm underline transition-colors"
                 >
-                  <Link
-                    href={{
-                      pathname: `/v2/groups/${group.id}`,
-                      query: { subject_id: group.subject.id },
-                    }}
-                  >
-                    View Details
-                  </Link>
-                </Button>
-                {/* <Button
-                  className="w-full ml-auto text-white bg-indigo-600 hover:bg-indigo-700"
-                  asChild
-                >
-                  <Link href={`/v2/groups/${group.id}`}>View Details</Link>
-                </Button> */}
+                  View Details →
+                </Link>
               </CardFooter>
             </Card>
           ))}

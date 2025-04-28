@@ -26,8 +26,6 @@ export default async function StudentGroupsSubject({
     throw new Error(result.message);
   }
 
-  console.log(result);
-
   // Filter out students from the users list
   const students = result.data.users.filter((user: any) =>
     user.role.includes("student")
@@ -39,8 +37,11 @@ export default async function StudentGroupsSubject({
         <Card className="bg-indigo-600">
           <CardHeader>
             <CardTitle className="text-4xl font-bold text-center text-white">
-              {result.data.group_user.name}
+              {result.data.name}
             </CardTitle>
+            <CardDescription className="mt-2 text-lg text-indigo-100 text-center">
+              {result.data.group_user.name}
+            </CardDescription>
           </CardHeader>
         </Card>
         <Tabs defaultValue="stream" className="w-full">

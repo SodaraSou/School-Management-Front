@@ -75,9 +75,9 @@ export default function TeacherAssignActivitiesDialog({
                 <p className="text-muted-foreground">No groups</p>
               ) : (
                 <>
-                  {groups.data.map((group: any) => (
+                  {groups.data.map((group: any, index: number) => (
                     <Card
-                      key={group.id}
+                      key={index}
                       className={`cursor-pointer transition-colors ${
                         selectedGroups.includes(group.id)
                           ? "border-indigo-500"
@@ -113,7 +113,7 @@ export default function TeacherAssignActivitiesDialog({
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {selectedGroups.map((groupId: number) => (
-                    <p>{groupId}</p>
+                    <p key={groupId}>{groupId}</p>
                   ))}
                 </div>
               </div>

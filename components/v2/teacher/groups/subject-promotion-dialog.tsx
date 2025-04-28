@@ -47,7 +47,10 @@ export default function SubjectPromotionDialog({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
+        <Button
+          variant={"outline"}
+          className="text-indigo-600 hover:text-indigo-700"
+        >
           <GraduationCap /> Promotion
         </Button>
       </DialogTrigger>

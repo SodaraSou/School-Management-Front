@@ -47,13 +47,13 @@ export default async function TeacherDashboard() {
   return (
     <TeacherLayout breadcrumbs={breadcrumbs}>
       <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between p-6 rounded-lg bg-indigo-50">
-          <div>
-            <h1 className="mb-2 text-4xl font-extrabold text-indigo-600">
+        <Card className="bg-indigo-600">
+          <CardHeader>
+            <CardTitle className="text-4xl font-extrabold text-white">
               Teacher Dashboard
-            </h1>
-          </div>
-        </div>
+            </CardTitle>
+          </CardHeader>
+        </Card>
 
         {/* Quick stats */}
         <div className="grid gap-4 md:grid-cols-3">
@@ -107,23 +107,13 @@ export default async function TeacherDashboard() {
         </div>
 
         {/* Teaching groups */}
-        <Card className="transition-shadow shadow-sm hover:shadow-md">
-          <CardHeader className="flex flex-row items-center justify-between bg-indigo-50 rounded-t-xl">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-indigo-600" />
-                <span className="text-indigo-900">My Teaching Groups</span>
-              </CardTitle>
-              <CardDescription className="text-indigo-600">
-                Manage your classes and student groups
-              </CardDescription>
-            </div>
+        <Card className="overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between bg-indigo-600 rounded-t-xl">
+            <CardTitle className="text-2xl font-semibold text-white">
+              My Teaching Groups
+            </CardTitle>
             <Link href="/v2/groups">
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-indigo-700 border-indigo-200 hover:bg-indigo-100"
-              >
+              <Button variant="outline" size="sm" className="text-indigo-700">
                 View All
               </Button>
             </Link>
@@ -150,9 +140,8 @@ export default async function TeacherDashboard() {
                   </div>
                   <Link href={`/v2/groups/${group.id}`}>
                     <Button
-                      variant="ghost"
                       size="sm"
-                      className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-100"
+                      className="text-white bg-indigo-600 hover:bg-indigo-700"
                     >
                       Manage
                     </Button>
@@ -164,15 +153,11 @@ export default async function TeacherDashboard() {
         </Card>
 
         {/* Create Activities */}
-        <Card className="transition-shadow shadow-sm hover:shadow-md">
-          <CardHeader className="bg-indigo-50 rounded-t-xl">
-            <CardTitle className="flex items-center gap-2">
-              <Award className="w-5 h-5 text-indigo-600" />
-              <span className="text-indigo-900">Create Activities</span>
+        <Card className="overflow-hidden">
+          <CardHeader className="bg-indigo-600">
+            <CardTitle className="text-white text-2xl font-semibold">
+              Create Activities
             </CardTitle>
-            <CardDescription className="text-indigo-600">
-              Create and manage assessments for your students
-            </CardDescription>
           </CardHeader>
           <CardContent className="p-6">
             <div className="grid gap-4 md:grid-cols-3">

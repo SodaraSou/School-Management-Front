@@ -91,8 +91,8 @@ export default async function TeacherActivitiesById({
           </CardHeader>
         </Card>
         <Card className="overflow-hidden">
-          <CardHeader className="bg-indigo-100 mb-6">
-            <CardTitle className="text-2xl font-bold text-indigo-600">
+          <CardHeader className="bg-indigo-600 mb-6">
+            <CardTitle className="text-2xl font-bold text-white">
               Students
             </CardTitle>
           </CardHeader>

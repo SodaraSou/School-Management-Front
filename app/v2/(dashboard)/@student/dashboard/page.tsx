@@ -3,13 +3,7 @@ import { type BreadcrumbItem } from "@/types";
 import { fetchStudentDashboard } from "@/app/v2/(dashboard)/@student/dashboard/services";
 
 import {
-  Award,
-  BookOpen,
   CalendarCheck,
-  FileText,
-  GraduationCap,
-  Target,
-  TrendingUp,
   Users,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,14 +24,12 @@ export default async function StudentDashboard() {
     throw new Error(result.message);
   }
 
-  console.log(result);
-
   return (
     <StudentLayout breadcrumbs={breadcrumbs}>
       <div className="flex flex-col gap-6">
-        <Card className="overflow-hidden">
-          <CardHeader className="bg-indigo-100">
-            <CardTitle className="text-4xl font-extrabold text-indigo-600">
+        <Card className="bg-indigo-600">
+          <CardHeader>
+            <CardTitle className="text-4xl font-extrabold text-white text-center">
               Student Dashboard
             </CardTitle>
           </CardHeader>
@@ -53,11 +45,8 @@ export default async function StudentDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-indigo-900">
-                {/* {result[0].data.total_groups} */}
+                {result.data.total_groups}
               </div>
-              <p className="mt-1 text-xs text-indigo-500">
-                Active teaching groups
-              </p>
             </CardContent>
           </Card>
           {/* <Card className="overflow-hidden border hover:shadow-md">
@@ -85,16 +74,15 @@ export default async function StudentDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-indigo-900">
-                {/* {result[0].data.current_semester.name} */}
+                {result.data.current_semester.name}
               </div>
-              <p className="mt-1 text-xs text-indigo-500">Academic period</p>
             </CardContent>
           </Card>
         </div>
 
         <Card className="overflow-hidden">
-          <CardHeader className="bg-indigo-100">
-            <CardTitle className="text-2xl font-semibold text-indigo-600">
+          <CardHeader className="bg-indigo-600">
+            <CardTitle className="text-2xl font-semibold text-white">
               Up Comming Activities
             </CardTitle>
           </CardHeader>
