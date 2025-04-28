@@ -16,10 +16,7 @@ export default function AuthForm({
   mode?: "sign-in" | "sign-up";
 }) {
   const initialState = { success: true, message: "", errors: {} };
-  const [state, formAction, isPending] = useActionState(
-    mode === "sign-in" ? signIn : signUp,
-    initialState
-  );
+  const [state, formAction, isPending] = useActionState(signIn, initialState);
 
   const { toast } = useToast();
   useEffect(() => {
