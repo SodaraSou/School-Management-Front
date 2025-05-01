@@ -88,9 +88,6 @@ export default function TeacherAssignActivitiesDialog({
                       <CardHeader className="p-4 flex flex-row items-center justify-between">
                         <div>
                           <h4 className="font-medium">{group.name}</h4>
-                          <p className="text-sm text-muted-foreground">
-                            {group.studentCount || 0} Students
-                          </p>
                         </div>
                         {selectedGroups.includes(group.id) && (
                           <CheckCircle className="h-5 w-5 text-indigo-600" />

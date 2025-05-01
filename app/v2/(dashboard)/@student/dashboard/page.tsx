@@ -2,13 +2,11 @@ import Link from "next/link";
 import { type BreadcrumbItem } from "@/types";
 import { fetchStudentDashboard } from "@/app/v2/(dashboard)/@student/dashboard/services";
 
-import {
-  CalendarCheck,
-  Users,
-} from "lucide-react";
+import { CalendarCheck, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import StudentLayout from "@/components/v2/student/layout/student-layout";
+import { format } from "date-fns";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -23,6 +21,8 @@ export default async function StudentDashboard() {
   if (result.success === false) {
     throw new Error(result.message);
   }
+
+  console.log(result);
 
   return (
     <StudentLayout breadcrumbs={breadcrumbs}>
@@ -88,30 +88,35 @@ export default async function StudentDashboard() {
           </CardHeader>
           <CardContent className="mt-6">
             <div className="flex flex-col gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <div>
-                    <h4 className="font-medium">Activity Name</h4>
-                    <p className="text-sm text-gray-500">Activity Type</p>
-                    <p className="text-sm text-gray-500">Due At</p>
-                  </div>
-                  <Button className="bg-indigo-600 hover:bg-indigo-700" asChild>
-                    <Link href={"/v2/activities"}>View Activity</Link>
-                  </Button>
-                </CardHeader>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <div>
-                    <h4 className="font-medium">Activity Name</h4>
-                    <p className="text-sm text-gray-500">Activity Type</p>
-                    <p className="text-sm text-gray-500">Due At</p>
-                  </div>
-                  <Button className="bg-indigo-600 hover:bg-indigo-700" asChild>
-                    <Link href={"/v2/activities"}>View Activity</Link>
-                  </Button>
-                </CardHeader>
-              </Card>
+              {result.data.future_activities.length > 0 ? (
+                result.data.future_activities.map((activity: any) => (
+                  <Card key={activity.id}>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                      <div>
+                        <h4 className="font-medium text-indigo-600">
+                          {activity.form.title}
+                        </h4>
+                        <p className="text-sm text-gray-500">Activity Type</p>
+                        <p className="text-sm text-gray-500">
+                          Due At: {format(new Date(activity.due_at), 'dd-MM-yyyy HH:mm a')}
+                        </p>
+                      </div>
+                      <Button
+                        className="bg-indigo-600 hover:bg-indigo-700"
+                        asChild
+                      >
+                        <Link href={`/v2/activities/${activity.id}`}>
+                          View Activity
+                        </Link>
+                      </Button>
+                    </CardHeader>
+                  </Card>
+                ))
+              ) : (
+                <p className="text-center text-gray-500">
+                  No upcoming activities.
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>

@@ -179,7 +179,7 @@ export default async function TeacherGroupById({
                               Due:{" "}
                               {format(
                                 new Date(activity.due_at),
-                                "yyyy-MM-dd HH:mm"
+                                "dd-MM-yyyy HH:mm a"
                               )}
                             </p>
                           </div>

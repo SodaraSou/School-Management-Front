@@ -1,6 +1,15 @@
 import Link from "next/link";
-import { fetchGroupSubjectById } from "@/app/v2/(dashboard)/@student/groups/services";
-import { FileText, MessageCircle, Users, PlusCircle, Eye } from "lucide-react";
+import {
+  fetchGroupSubjectById,
+  fetchGroupSubjectStudentScore,
+} from "@/app/v2/(dashboard)/@student/groups/services";
+import {
+  FileText,
+  MessageCircle,
+  Users,
+  Eye,
+  GraduationCap,
+} from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
@@ -13,6 +22,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import StudentLayout from "@/components/v2/student/layout/student-layout";
 import { format } from "date-fns";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default async function StudentGroupsSubject({
   params,
@@ -21,6 +38,7 @@ export default async function StudentGroupsSubject({
 }) {
   const { id, subject_id } = await params;
   const result = await fetchGroupSubjectById(id, subject_id);
+  const studentScore = await fetchGroupSubjectStudentScore(id, subject_id);
 
   if (result.success === false) {
     throw new Error(result.message);
@@ -67,6 +85,13 @@ export default async function StudentGroupsSubject({
               <Users className="w-4 h-4 mr-2" />
               People
             </TabsTrigger>
+            <TabsTrigger
+              value="result"
+              className="data-[state=active]:text-indigo-700 data-[state=active]:border-b-2 data-[state=active]:border-indigo-700"
+            >
+              <GraduationCap className="w-4 h-4 mr-2" />
+              Result
+            </TabsTrigger>
           </TabsList>
 
           {/* Stream Tab */}
@@ -94,7 +119,7 @@ export default async function StudentGroupsSubject({
                               Posted on{" "}
                               {format(
                                 new Date(post.created_at),
-                                "yyyy-MM-dd HH:mm"
+                                "dd-MM-yyyy HH:mm a"
                               )}
                             </p>
                           </div>
@@ -134,7 +159,7 @@ export default async function StudentGroupsSubject({
                             Due:{" "}
                             {format(
                               new Date(activity.due_at),
-                              "yyyy-MM-dd HH:mm"
+                              "dd-MM-yyyy HH:mm a"
                             )}
                           </p>
                         </div>
@@ -167,7 +192,7 @@ export default async function StudentGroupsSubject({
                   People
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent className="mt-6 flex flex-col gap-6">
                 {students && students.length > 0 ? (
                   students.map((student: any) => (
                     <Card key={student.id} className="mb-4">
@@ -186,6 +211,65 @@ export default async function StudentGroupsSubject({
                   ))
                 ) : (
                   <p>No students available.</p>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="result">
+            <Card className="overflow-hidden">
+              <CardHeader className="flex flex-row items-center justify-between bg-indigo-600">
+                <CardTitle className="text-2xl font-bold text-white">
+                  Result
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                {studentScore.success === false ? (
+                  <div className="text-center">
+                    <h4 className="text-xl font-semibold">
+                      {studentScore.message}
+                    </h4>
+                  </div>
+                ) : (
+                  <>
+                    {studentScore.data.length === 0 ? (
+                      <div className="text-center">
+                        <h4 className="text-xl font-semibold">No Data</h4>
+                      </div>
+                    ) : (
+                      <Table className="min-w-full">
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="px-4 py-2 text-left text-sm font-bold text-indigo-700">
+                              Activity
+                            </TableHead>
+                            <TableHead className="px-4 py-2 text-left text-sm font-bold text-indigo-700">
+                              Type
+                            </TableHead>
+                            <TableHead className="px-4 py-2 text-left text-sm font-bold text-indigo-700">
+                              Score
+                            </TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {studentScore.data.map((result: any) => (
+                            <TableRow
+                              key={result.name}
+                              className="border-t border-gray-200"
+                            >
+                              <TableCell className="px-4 py-2 text-sm text-gray-800">
+                                {result.name}
+                              </TableCell>
+                              <TableCell className="px-4 py-2 text-sm text-gray-800"></TableCell>
+                              <TableCell className="px-4 py-2 text-sm text-gray-800">
+                                {result.scores}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    )}
+                  </>
                 )}
               </CardContent>
             </Card>

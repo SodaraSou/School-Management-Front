@@ -138,14 +138,14 @@ export default async function TeacherDashboard() {
                       </p>
                     </div>
                   </div>
-                  <Link href={`/v2/groups/${group.id}`}>
+                  {/* <Link href={`/v2/groups/${group.id}`}>
                     <Button
                       size="sm"
                       className="text-white bg-indigo-600 hover:bg-indigo-700"
                     >
                       Manage
                     </Button>
-                  </Link>
+                  </Link> */}
                 </div>
               ))}
             </div>

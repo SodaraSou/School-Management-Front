@@ -110,9 +110,13 @@ export default function TeacherCreateActivitiesForm({
     );
   };
 
-  const handleNameChange = (qIndex: number, value: string) => {
+  const handleQuestionFieldChange = (
+    qIndex: number,
+    field: "name" | "correct_answer",
+    value: string
+  ) => {
     setQuestions((prev) =>
-      prev.map((q, i) => (i === qIndex ? { ...q, name: value } : q))
+      prev.map((q, i) => (i === qIndex ? { ...q, [field]: value } : q))
     );
   };
 
@@ -250,8 +254,8 @@ export default function TeacherCreateActivitiesForm({
 
   return (
     <Card className="w-full max-w-3xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-      <CardHeader className="bg-indigo-100">
-        <CardTitle className="text-3xl font-bold text-indigo-600">
+      <CardHeader className="bg-indigo-600">
+        <CardTitle className="text-3xl font-bold text-white">
           Create Activities
         </CardTitle>
       </CardHeader>
@@ -375,7 +379,24 @@ export default function TeacherCreateActivitiesForm({
               <Input
                 type="text"
                 value={question.name}
-                onChange={(e) => handleNameChange(qIndex, e.target.value)}
+                onChange={(e) =>
+                  handleQuestionFieldChange(qIndex, "name", e.target.value)
+                }
+                className="w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1 font-medium">Correct Answer:</label>
+              <Input
+                type="text"
+                value={question.correct_answer}
+                onChange={(e) =>
+                  handleQuestionFieldChange(
+                    qIndex,
+                    "correct_answer",
+                    e.target.value
+                  )
+                }
                 className="w-full"
               />
             </div>

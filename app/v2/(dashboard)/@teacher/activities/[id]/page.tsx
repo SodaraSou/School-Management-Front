@@ -51,7 +51,7 @@ export default async function TeacherActivitiesById({
               <h1 className="text-4xl font-extrabold text-indigo-600">
                 {result.data.title}
               </h1>
-              <Button className="bg-yellow-500 hover:bg-yellow-600" asChild>
+              <Button className="bg-yellow-400 hover:bg-yellow-500" asChild>
                 <Link href={`/v2/activities/${result.data.id}/edit`}>
                   <Edit /> Edit Activity
                 </Link>

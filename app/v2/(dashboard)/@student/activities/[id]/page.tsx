@@ -1,12 +1,6 @@
 import { fetchStudentsActivityById } from "@/app/v2/(dashboard)/@student/activities/services";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import StudentLayout from "@/components/v2/student/layout/student-layout";
 import { format } from "date-fns";
 import { Calendar, Clock, GraduationCap } from "lucide-react";
@@ -84,7 +78,7 @@ export default async function StudentActivitiesShowPage({
               </Button>
             ) : (
               <Button
-                className="text-white px-4 py-2 rounded-lg"
+                className="text-white px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700"
                 asChild
                 disabled={result.data.is_submitted}
               >
