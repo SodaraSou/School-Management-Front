@@ -83,12 +83,14 @@ export default async function StudentDashboard() {
         <Card className="overflow-hidden">
           <CardHeader className="bg-indigo-600">
             <CardTitle className="text-2xl font-semibold text-white">
-              Up Comming Activities
+              Up Coming Activities
             </CardTitle>
           </CardHeader>
           <CardContent className="mt-6">
             <div className="flex flex-col gap-6">
-              {result.data.future_activities.length > 0 ? (
+              {result.data.future_activities.length === 0 ? (
+                <p>No upcoming activities</p>
+              ) : (
                 result.data.future_activities.map((activity: any) => (
                   <Card key={activity.id}>
                     <CardHeader className="flex flex-row items-center justify-between">
@@ -96,9 +98,15 @@ export default async function StudentDashboard() {
                         <h4 className="font-medium text-indigo-600">
                           {activity.form.title}
                         </h4>
-                        <p className="text-sm text-gray-500">Activity Type</p>
                         <p className="text-sm text-gray-500">
-                          Due At: {format(new Date(activity.due_at), 'dd-MM-yyyy HH:mm a')}
+                          Activity Type: {activity.activity_type.name}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          Due At:{" "}
+                          {format(
+                            new Date(activity.due_at),
+                            "dd-MM-yyyy HH:mm a"
+                          )}
                         </p>
                       </div>
                       <Button
@@ -112,10 +120,6 @@ export default async function StudentDashboard() {
                     </CardHeader>
                   </Card>
                 ))
-              ) : (
-                <p className="text-center text-gray-500">
-                  No upcoming activities.
-                </p>
               )}
             </div>
           </CardContent>

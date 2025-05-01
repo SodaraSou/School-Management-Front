@@ -195,7 +195,7 @@ export default async function StudentGroupsSubject({
               <CardContent className="mt-6 flex flex-col gap-6">
                 {students && students.length > 0 ? (
                   students.map((student: any) => (
-                    <Card key={student.id} className="mb-4">
+                    <Card key={student.id}>
                       <CardHeader className="flex flex-row gap-6 items-center">
                         <Avatar>
                           <AvatarImage src={student.image_url || ""} />

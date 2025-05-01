@@ -208,7 +208,7 @@ export default async function TeacherGroupById({
                   Students
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent className="p-6 flex flex-col gap-6">
                 {result.data.students.map((student: any, index: number) => (
                   <Card key={index}>
                     <CardHeader className="flex flex-row gap-6">
