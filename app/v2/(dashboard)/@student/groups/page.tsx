@@ -38,8 +38,6 @@ export default async function StudentGroups() {
     throw new Error(result.message);
   }
 
-  console.log(result);
-
   return (
     <StudentLayout breadcrumbs={breadcrumbs}>
       <div className="flex flex-col gap-6">
