@@ -121,7 +121,7 @@ export default async function TeacherActivitiesById({
                       )}
                     </TableCell>
                     <TableCell>{student.score}</TableCell>
-                    <TableCell>{student.submitted_date}</TableCell>
+                    <TableCell>{student.submit_date}</TableCell>
                     <TableCell>
                       <div className="flex justify-center">
                         <Button className="bg-blue-500 hover:bg-blue-600">

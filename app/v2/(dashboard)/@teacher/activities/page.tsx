@@ -152,7 +152,7 @@ export default async function TeacherActivities() {
                           <p className="font-medium">
                             {format(
                               new Date(activity.due_at),
-                              "yy-MM-dd HH:mm"
+                              "dd-MM-yyyy HH:mm a"
                             )}
                           </p>
                         </div>
